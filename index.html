@@ -147,7 +147,10 @@
       <div class="query">
         <div class="qstatus" id="qStatus">👆 点击地图点位：先选<b>起点</b>，再点<b>终点</b>自动算耗时</div>
         <div class="qresult" id="qResult"></div>
-        <div class="qbtn"><button class="btn" id="clearBtn">清除选择</button></div>
+        <div class="qbtn">
+          <button class="btn" id="refreshBtn" disabled>🔄 刷新实时路况</button>
+          <button class="btn" id="clearBtn">清除选择</button>
+        </div>
       </div>
       <div class="tip">⏱️ 点对点耗时用高德实时驾车规划（含路况）。特例：<b>相公山(4)</b> 隔漓江，自驾要绕阳朔大桥（约 75 分钟），走「轮渡 ¥5 + 观光车」只需约 25 分钟。</div>
     </div>
@@ -228,7 +231,7 @@ var SEGS = [
 ];
 
 var map=null, markers={}, overlaysD1=[], overlaysD2=[], driving=null;
-var selOrigin=null, selDest=null, queryLine=null, highlightA=null;
+var selOrigin=null, selDest=null, queryLine=null, highlightA=null, lastPair=null;
 
 function pxy(p){ return [p.lng, p.lat]; }
 
@@ -282,6 +285,12 @@ function init(){
   document.getElementById("bD1").onclick=function(){switchDay("d1");};
   document.getElementById("bD2").onclick=function(){switchDay("d2");};
   document.getElementById("clearBtn").onclick=function(){resetSel();};
+  document.getElementById("refreshBtn").onclick=function(){
+    if(lastPair){
+      document.getElementById("qStatus").innerHTML='🔄 正在刷新实时路况…';
+      doQuery(lastPair.a, lastPair.b);
+    }
+  };
 }
 
 function onMarkerClick(p){
@@ -315,6 +324,8 @@ function setDest(p){
 
 function doQuery(a,b){
   var i=a.id-1, j=b.id-1;
+  lastPair={a:a,b:b};
+  document.getElementById("refreshBtn").disabled=false;
   if(driving){
     driving.search(pxy(a), pxy(b), function(status,result){
       if(status==="complete" && result.routes && result.routes.length){
@@ -330,8 +341,13 @@ function fallback(i,j){
   show(i,j,TMIN[i][j],KM[i][j],"估算");
 }
 
+function now(){
+  var d=new Date();
+  return ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2)+":"+("0"+d.getSeconds()).slice(-2);
+}
+
 function show(i,j,min,km,tag){
-  document.getElementById("qResult").innerHTML = P[i].name+" → "+P[j].name+"：约 <b>"+min+" 分钟</b> ｜ "+km+" 公里 <small>（"+tag+"驾车）</small>";
+  document.getElementById("qResult").innerHTML = P[i].name+" → "+P[j].name+"：约 <b>"+min+" 分钟</b> ｜ "+km+" 公里 <small>（"+tag+"驾车 · 更新于 "+now()+"）</small>";
 }
 
 function drawRoute(result){
@@ -347,7 +363,8 @@ function drawRoute(result){
 }
 
 function resetSel(){
-  selOrigin=null; selDest=null;
+  selOrigin=null; selDest=null; lastPair=null;
+  document.getElementById("refreshBtn").disabled=true;
   P.forEach(function(p){ markers[p.id].setContent(numHtml(p,false)); });
   if(queryLine){queryLine.setMap(null);queryLine=null;}
   if(highlightA){highlightA.setMap(null);highlightA=null;}
