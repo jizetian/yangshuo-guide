@@ -2,391 +2,1106 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>阳朔 · 不早起两日游攻略</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f5f0">
+<title>阳朔两天一晚 · 住兴坪 · 无车版</title>
 <style>
-  :root{--purple:#667eea;--purple2:#764ba2;--pink:#f093fb;--ink:#2b2b3a;--bg:#f6f7fb;--card:#fff;--muted:#8a8aa0;--d1:#667eea;--d2:#e0559a;}
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;}
-  .hero{background:linear-gradient(135deg,#667eea 0%,#764ba2 60%,#a36bd6 100%);color:#fff;padding:52px 24px 58px;text-align:center;}
-  .hero h1{font-size:34px;font-weight:800;letter-spacing:1px;}
-  .hero .sub{margin-top:10px;font-size:15px;opacity:.92;}
-  .hero .tags{margin-top:16px;}
-  .tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 14px;font-size:13px;margin:4px;}
-  nav{position:sticky;top:0;z-index:1200;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-bottom:1px solid #eef0f7;display:flex;gap:4px;padding:0 14px;overflow-x:auto;}
-  nav a{flex:0 0 auto;padding:14px 16px;font-size:14px;color:#555;text-decoration:none;font-weight:600;border-bottom:2px solid transparent;}
-  nav a:hover{color:var(--purple2);}
-  .wrap{max-width:920px;margin:0 auto;padding:0 16px 90px;}
-  section{padding-top:20px;}
-  .card{background:var(--card);border-radius:16px;padding:26px;margin-top:20px;box-shadow:0 4px 20px rgba(80,60,150,.06);}
-  .card h2{font-size:21px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-  .bar{width:6px;height:20px;border-radius:3px;background:linear-gradient(var(--purple),var(--pink));}
-  .muted{color:var(--muted);font-size:13px;}
-  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px;}
-  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid #eef0f7;}
-  th{color:var(--purple2);font-weight:600;background:#fafaff;white-space:nowrap;}
-  tr:last-child td{border-bottom:none;}
-  .timeline{position:relative;margin-top:14px;padding-left:26px;}
-  .timeline::before{content:"";position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:linear-gradient(var(--purple),var(--pink));}
-  .tl{position:relative;margin-bottom:15px;}
-  .tl::before{content:"";position:absolute;left:-26px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--purple);box-shadow:0 0 0 3px rgba(102,126,234,.18);}
-  .tl.d2::before{background:var(--d2);box-shadow:0 0 0 3px rgba(224,85,154,.18);}
-  .tl .time{font-weight:700;color:var(--purple2);font-size:14px;}
-  .tl.d2 .time{color:var(--d2);}
-  .tl .act{font-size:14px;margin-top:2px;}
-  .tl .dist{color:var(--muted);font-size:12px;margin-top:1px;}
-  #map{height:480px;border-radius:14px;border:1px solid #eef0f7;}
-  .map-tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
-  .btn{background:#fff;border:1px solid #ddd;border-radius:999px;padding:7px 15px;font-size:13px;font-weight:600;color:#555;cursor:pointer;}
-  .btn:hover{border-color:var(--purple);color:var(--purple2);}
-  .btn.active{background:var(--purple);border-color:var(--purple);color:#fff;}
-  .btn.active.d2{background:var(--d2);border-color:var(--d2);}
-  .query{margin-top:14px;background:#fafaff;border:1px solid #eef0f7;border-radius:12px;padding:14px;}
-  .qstatus{font-size:13px;color:var(--muted);}
-  .qstatus b{color:var(--purple2);}
-  .qresult{margin-top:10px;font-size:16px;font-weight:700;color:var(--purple2);min-height:22px;}
-  .qresult small{font-weight:400;color:var(--muted);font-size:12px;display:block;margin-top:2px;}
-  .qbtn{margin-top:10px;display:flex;gap:8px;}
-  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:12px;}
-  .legend span{background:#f3f0ff;color:#5b4aa0;border-radius:6px;padding:3px 9px;}
-  .legend span.d2{background:#fdeef5;color:#b23a74;}
-  .legend b{margin-right:3px;}
-  .badge{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;font-weight:600;}
-  .free{background:#e6f7ee;color:#1a9d5a;}
-  .paid{background:#fff3e0;color:#d97706;}
-  .total{background:linear-gradient(135deg,#fdf0fb,#f3f0ff);border-radius:12px;padding:16px 18px;margin-top:14px;font-size:15px;font-weight:700;color:#8a2a6a;}
-  .tip{background:#fffbe6;border-left:4px solid #f5c518;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:13px;}
-  .pill{display:inline-block;background:#fdf0fb;color:#c2459a;border-radius:999px;padding:3px 11px;font-size:12px;margin:3px 3px 0 0;}
-  ul{padding-left:20px;margin-top:8px;font-size:14px;}li{margin:5px 0;}
-  .foot{text-align:center;color:var(--muted);font-size:12px;margin-top:30px;}
-  .num{width:26px;height:26px;border-radius:50%;background:var(--d1);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.35);cursor:pointer;}
-  .num.d2{background:var(--d2);}
-  .num.sel{box-shadow:0 0 0 4px #ffb703;}
-  .amap-info-content{font-size:13px;line-height:1.6;}
-  @media(max-width:600px){#map{height:340px;}.hero h1{font-size:26px;}}
+:root{
+  --paper:#f7f5f0; --card:#fffdf9; --ink:#1f2426; --ink2:#5b656a; --ink3:#8b9499;
+  --line:#e4dfd5; --line2:#efebe3;
+  --jade:#2f6b57; --river:#35657f; --clay:#b0522f; --gold:#8a6a33;
+  --warn-bg:#fdf6ec; --warn-line:#e0b978;
+  --stop-bg:#fbeeea; --stop-line:#d99c86;
+  --ok-bg:#eef4f0; --ok-line:#9dc0ae;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--paper); color:var(--ink); line-height:1.72; font-size:15px;
+  padding-bottom:64px;
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 15px}
+
+/* ── 页头 ── */
+header{padding:30px 0 18px;border-bottom:1px solid var(--line)}
+header h1{font-size:23px;font-weight:700;letter-spacing:-.2px;line-height:1.35}
+header .meta{margin-top:7px;font-size:13.5px;color:var(--ink2)}
+header .meta b{color:var(--ink);font-weight:600}
+.stamp{display:inline-block;font-size:11.5px;color:var(--gold);border:1px solid #d9c9a3;
+  background:#fdf9ef;border-radius:3px;padding:1px 7px;margin-left:6px;vertical-align:2px;letter-spacing:.3px}
+
+/* ── 导航 ── */
+nav{position:sticky;top:0;z-index:900;background:rgba(247,245,240,.94);
+  backdrop-filter:saturate(1.6) blur(8px);border-bottom:1px solid var(--line);
+  display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-bottom:2px}
+nav::-webkit-scrollbar{display:none}
+nav a{flex:0 0 auto;padding:11px 13px;font-size:13.5px;color:var(--ink2);
+  text-decoration:none;font-weight:500;white-space:nowrap;border-bottom:2px solid transparent}
+nav a:active{color:var(--jade)}
+
+/* ── 通用块 ── */
+section{padding-top:26px}
+h2{font-size:17.5px;font-weight:700;letter-spacing:-.2px;margin-bottom:3px;
+  display:flex;align-items:baseline;gap:8px}
+h2 .n{font-size:11.5px;color:var(--ink3);font-weight:600;letter-spacing:1px;flex:0 0 auto}
+h2+.lede{font-size:13.5px;color:var(--ink2);margin-bottom:13px;line-height:1.65}
+.card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:16px 17px;margin-top:13px}
+.card.tight{padding:13px 15px}
+hr{border:0;border-top:1px solid var(--line2);margin:15px 0}
+
+/* ── 行程参数 ── */
+.setup{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:15px 16px;margin-top:15px}
+.setup .row{display:flex;flex-wrap:wrap;gap:11px;margin-top:10px}
+.setup label{flex:1 1 150px;font-size:12px;color:var(--ink2);font-weight:600}
+.setup input{display:block;width:100%;margin-top:4px;padding:8px 9px;font-size:15px;
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+.setup input:focus{outline:none;border-color:var(--jade);box-shadow:0 0 0 3px rgba(47,107,87,.09)}
+.setup .hint{font-size:12px;color:var(--ink3);margin-top:9px;line-height:1.6}
+
+/* ── 此刻 ── */
+#nowbox{border-radius:9px;padding:14px 16px;margin-top:15px;border:1px solid var(--ok-line);background:var(--ok-bg)}
+#nowbox.idle{border-color:var(--line);background:var(--card)}
+#nowbox.alert{border-color:var(--stop-line);background:var(--stop-bg)}
+#nowbox .lbl{font-size:11.5px;letter-spacing:1.2px;color:var(--ink3);font-weight:700}
+#nowbox .big{font-size:17px;font-weight:700;margin-top:3px;line-height:1.45}
+#nowbox .sub{font-size:13px;color:var(--ink2);margin-top:5px}
+
+/* ── 时间轴 ── */
+.day{margin-top:16px}
+.day-hd{display:flex;align-items:baseline;gap:9px;padding-bottom:9px;border-bottom:2px solid var(--jade)}
+.day-hd.d2{border-color:var(--river)}
+.day-hd .tag{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--jade)}
+.day-hd.d2 .tag{color:var(--river)}
+.day-hd .ttl{font-size:15.5px;font-weight:700}
+.day-hd .dt{margin-left:auto;font-size:12.5px;color:var(--ink3)}
+
+.tl{position:relative;padding-left:66px;padding-top:15px;padding-bottom:2px}
+.tl::before{content:"";position:absolute;left:53px;top:0;bottom:0;width:1px;background:var(--line)}
+.tl:last-child::before{bottom:auto;height:22px}
+.tl .clock{position:absolute;left:0;top:15px;width:46px;text-align:right;
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:13.5px;font-weight:600;color:var(--ink);letter-spacing:-.4px}
+.tl .dot{position:absolute;left:49px;top:22px;width:7px;height:7px;border-radius:50%;
+  background:#fff;border:2px solid var(--jade)}
+.tl.d2 .dot{border-color:var(--river)}
+.tl.soft .dot{border-color:var(--line);background:var(--line2)}
+.tl.soft .clock{color:var(--ink3);font-weight:500}
+.tl .act{font-size:15px;font-weight:600;line-height:1.5}
+.tl.soft .act{font-weight:500;color:var(--ink2);font-size:14px}
+.tl .det{font-size:13px;color:var(--ink2);margin-top:3px;line-height:1.65}
+.tl .det em{font-style:normal;color:var(--clay);font-weight:600}
+.tl .money{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--gold);font-weight:600}
+.tl.on{background:linear-gradient(90deg,rgba(47,107,87,.07),transparent 72%);
+  border-radius:0 8px 8px 0;margin-left:-8px;padding-left:74px}
+.tl.on .act::after{content:"　← 现在";font-size:12px;color:var(--jade);font-weight:700}
+
+/* 操作按钮 */
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.act-btn{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:600;
+  text-decoration:none;color:var(--jade);background:#fff;border:1px solid #c8d9d0;
+  border-radius:20px;padding:4px 11px;cursor:pointer;font-family:inherit}
+.act-btn:active{background:var(--ok-bg)}
+.act-btn.tel{color:var(--river);border-color:#c2d4de}
+.act-btn.buy{color:var(--clay);border-color:#e0bfae}
+
+/* ── 提示条 ── */
+.note{border-left:3px solid var(--line);padding:9px 0 9px 12px;margin-top:11px;font-size:13.5px;line-height:1.68;color:var(--ink2)}
+.note b{color:var(--ink);font-weight:600}
+.note.warn{border-color:var(--warn-line);background:var(--warn-bg);border-radius:0 6px 6px 0;padding-right:12px}
+.note.stop{border-color:var(--stop-line);background:var(--stop-bg);border-radius:0 6px 6px 0;padding-right:12px}
+.note.ok{border-color:var(--ok-line);background:var(--ok-bg);border-radius:0 6px 6px 0;padding-right:12px}
+.note .h{display:block;font-weight:700;color:var(--ink);margin-bottom:2px;font-size:13.5px}
+
+/* ── 表格 ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px}
+th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--line2);vertical-align:top}
+th{font-size:12px;color:var(--ink3);font-weight:600;letter-spacing:.4px;white-space:nowrap;
+  border-bottom:1px solid var(--line)}
+td.num{text-align:right;font-family:ui-monospace,Menlo,monospace;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr.sum td{border-top:1.5px solid var(--line);font-weight:700;padding-top:11px}
+
+/* ── 对比卡 ── */
+.opt{border:1px solid var(--line);border-radius:8px;padding:13px 14px;margin-top:10px;background:var(--card)}
+.opt.best{border-color:var(--ok-line);background:var(--ok-bg)}
+.opt .oh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.opt .on{font-size:14.5px;font-weight:700}
+.opt .op{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--gold);font-weight:600;margin-left:auto}
+.opt .pick{font-size:11px;font-weight:700;color:#fff;background:var(--jade);border-radius:3px;padding:1px 6px;letter-spacing:.5px}
+.opt .od{font-size:13px;color:var(--ink2);margin-top:5px;line-height:1.65}
+.opt .od .plus{color:var(--jade);font-weight:600}
+.opt .od .minus{color:var(--clay);font-weight:600}
+
+/* ── 折叠 ── */
+details{border:1px solid var(--line);border-radius:8px;background:var(--card);margin-top:10px;overflow:hidden}
+summary{padding:12px 15px;font-size:14px;font-weight:600;cursor:pointer;list-style:none;
+  display:flex;align-items:center;gap:8px}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸";color:var(--ink3);font-size:12px;transition:transform .15s}
+details[open] summary::before{transform:rotate(90deg)}
+details[open] summary{border-bottom:1px solid var(--line2)}
+.dbody{padding:13px 15px 15px;font-size:13.5px;color:var(--ink2);line-height:1.72}
+.dbody b{color:var(--ink)}
+.dbody p+p{margin-top:9px}
+
+/* ── 地图 ── */
+#map{height:400px;border-radius:8px;border:1px solid var(--line);margin-top:12px;background:#eee}
+.mtools{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.mbtn{font-size:12.5px;font-weight:600;padding:6px 13px;border-radius:20px;cursor:pointer;
+  border:1px solid var(--line);background:var(--card);color:var(--ink2);font-family:inherit}
+.mbtn.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.mout{font-size:13px;color:var(--ink2);margin-top:10px;min-height:20px;line-height:1.6}
+.mout b{color:var(--ink)}
+.pin{width:23px;height:23px;border-radius:50%;background:var(--jade);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;
+  border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer}
+.pin.d2{background:var(--river)}
+.pin.me{background:var(--clay)}
+.amap-info-content{font-size:13px;line-height:1.6;padding:9px 11px}
+.amap-info-content .nav-lnk{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:600;
+  color:#fff;background:var(--jade);border-radius:5px;padding:4px 10px;text-decoration:none}
+
+/* ── 清单 ── */
+.chk{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.chk label{display:inline-flex;align-items:center;gap:6px;font-size:13px;
+  border:1px solid var(--line);border-radius:20px;padding:5px 12px;cursor:pointer;background:var(--card)}
+.chk input{width:14px;height:14px;accent-color:var(--jade);margin:0}
+.chk label.done{color:var(--ink3);text-decoration:line-through;background:var(--paper);border-color:var(--line2)}
+
+/* ── 离线卡 ── */
+.info-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line2);font-size:13.5px}
+.info-row:last-child{border-bottom:none}
+.info-row .k{flex:0 0 76px;color:var(--ink3);font-size:12.5px;padding-top:1px}
+.info-row .v{flex:1;line-height:1.65}
+.info-row .v a{color:var(--river);text-decoration:none;font-weight:600}
+.copy{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink2);
+  background:var(--paper);border:1px solid var(--line2);border-radius:4px;padding:1px 6px;cursor:pointer}
+.copy:active{background:var(--ok-bg)}
+
+footer{margin-top:38px;padding:18px 0 10px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--ink3);line-height:1.8}
+footer a{color:var(--ink2)}
+
+@media(max-width:520px){
+  .wrap{padding:0 13px}
+  header h1{font-size:20px}
+  #map{height:330px}
+  .tl{padding-left:60px}
+  .tl::before{left:47px} .tl .dot{left:43px} .tl .clock{width:40px}
+  .tl.on{padding-left:68px}
+}
 </style>
 </head>
 <body>
-
-<div class="hero">
-  <h1>阳朔 · 不早起两日游</h1>
-  <div class="sub">广州出发 · 2天1晚 · 住兴坪希尔顿花园酒店</div>
-  <div class="tags">
-    <span class="tag">🏞️ 漓江山水</span><span class="tag">🛶 遇龙河竹筏</span><span class="tag">🏯 兴坪古镇</span><span class="tag">🍜 西街美食</span><span class="tag">📸 拍照打卡</span>
-  </div>
-</div>
-
-<nav>
-  <a href="#overview">总览</a>
-  <a href="#itinerary">行程时间轴</a>
-  <a href="#mapsec">交互地图</a>
-  <a href="#budget">预算</a>
-  <a href="#tips">避坑清单</a>
-</nav>
-
 <div class="wrap">
 
-  <section id="overview">
-    <div class="card">
-      <h2><span class="bar"></span>出行总览</h2>
-      <table>
-        <tr><th>出发</th><td>广州南 → 阳朔站（高铁，约 09:30 出发，约 11:40 抵达）</td></tr>
-        <tr><th>返程</th><td>阳朔站 → 广州南（约 20:00 出发，约 22:30 抵达）</td></tr>
-        <tr><th>住宿</th><td>桂林阳朔腾昇希尔顿花园酒店 · 兴坪镇新榕街63号</td></tr>
-        <tr><th>风格</th><td>不早起 · 慢玩 · 舒适档</td></tr>
-      </table>
-      <div class="tip">⚠️ 高铁时间以实际车票为准。若返程是「20:00 到广州」，则阳朔出发约 17:30，D2 行程整体提前 1.5 小时。</div>
-    </div>
-  </section>
+<header>
+  <h1>阳朔两天一晚 · 住兴坪 · 无车版</h1>
+  <div class="meta">
+    广州南往返 · 住 <b>桂林阳朔腾昇希尔顿花园</b>（兴坪镇新榕街63号）· 全程<b>打车 + 中巴 + 电动车</b>
+    <span class="stamp">按真实车次自动重排</span>
+  </div>
+</header>
 
-  <section id="itinerary">
-    <div class="card">
-      <h2><span class="bar"></span>D1 · 兴坪片（酒店周边，全程不赶）</h2>
-      <div class="timeline">
-        <div class="tl"><div class="time">09:30</div><div class="act">广州南乘高铁出发</div><div class="dist">约 2 小时</div></div>
-        <div class="tl"><div class="time">11:40</div><div class="act">抵达阳朔站 → 前往酒店</div><div class="dist">阳朔站距酒店约 10 分钟</div></div>
-        <div class="tl"><div class="time">12:30</div><div class="act">兴坪古镇 + 午餐（啤酒鱼/漓江鱼）</div><div class="dist">酒店 → 兴坪古镇 3 分钟 · <span class="badge free">免费</span></div></div>
-        <div class="tl"><div class="time">14:00</div><div class="act">20元人民币背景图打卡</div><div class="dist">步行 4 分钟 · 兴坪码头/朝板山机位 · <span class="badge free">免费</span></div></div>
-        <div class="tl"><div class="time">15:00</div><div class="act">相公山 / 千里江山（漓江第一湾全景）</div><div class="dist">轮渡 ¥5 + 观光车约 25 分钟 · 观景台 <span class="badge paid">¥60</span> / 老寨山免费</div></div>
-        <div class="tl"><div class="time">17:30</div><div class="act">返回兴坪，漓江边日落</div><div class="dist">—</div></div>
-        <div class="tl"><div class="time">18:30</div><div class="act">兴坪晚餐，回酒店</div><div class="dist">—</div></div>
+<nav>
+  <a href="#setup">改车次</a>
+  <a href="#key">三件事</a>
+  <a href="#d1">第一天</a>
+  <a href="#d2">第二天</a>
+  <a href="#map-sec">地图</a>
+  <a href="#choose">怎么选</a>
+  <a href="#planb">意外了</a>
+  <a href="#money">花费</a>
+  <a href="#offline">离线信息</a>
+</nav>
+
+<!-- ══════════ 行程参数 ══════════ -->
+<section id="setup">
+  <h2><span class="n">01</span>先把你的车次填进去</h2>
+  <p class="lede">下面所有时刻都由这三个值算出来。改一次，两天的时间轴和「最晚几点必须走」全部跟着变。填完自动存在这台手机里。</p>
+  <div class="setup">
+    <div class="row">
+      <label>出发日期（D1）
+        <input type="date" id="inDate">
+      </label>
+      <label>D1 抵达阳朔站
+        <input type="time" id="inArr" value="11:32">
+      </label>
+      <label>D2 返程发车
+        <input type="time" id="inDep" value="19:16">
+      </label>
+    </div>
+    <div class="hint">
+      默认值取自小红书上一条同线路实测帖（广州南 08:40→11:32，返程 19:16→21:52）。
+      注意有车次是 <b>09:02 发车、1小时58分</b> 到，比 2小时52分那趟快将近一小时，值得优先抢。
+    </div>
+  </div>
+  <div id="nowbox" class="idle">
+    <div class="lbl">此刻</div>
+    <div class="big" id="nowBig">填好日期后，这里会显示你当下该在哪</div>
+    <div class="sub" id="nowSub"></div>
+  </div>
+</section>
+
+<!-- ══════════ 三件事 ══════════ -->
+<section id="key">
+  <h2><span class="n">02</span>只记三件事也够用</h2>
+  <p class="lede">其余都能现场随机应变，这三件错过了当天补不回来。</p>
+
+  <div class="note stop">
+    <span class="h">① D1 晚上 20:00，闹钟，抢遇龙河次日票</span>
+    遇龙河竹筏是<b>前一晚 20:00 放次日票</b>，不是当天买。抢到的人现场取号几分钟就叫号；没抢到的人在码头排两小时还未必有。
+    你要的段是 <b>水厄底码头 → 工农桥综合码头</b>，双人筏 <b>¥200/筏</b>（3 公里、4 个坝、约 40–50 分钟）。
+    <div class="acts">
+      <button class="act-btn buy" id="alarmBtn">加一个 20:00 抢票提醒</button>
+    </div>
+  </div>
+
+  <div class="note ok">
+    <span class="h">② 你住的位置比住西街强，别慌</span>
+    小红书上「阳朔打不到车」的帖子传得很凶，但翻到评论区就露馅了——那是<b>清明假期</b>发的，本地人回帖点破「广西人最重清明，网约车师傅都回去上坟了」，同一条帖下面一堆人回「滴滴 10 秒接单」。
+    你 9 月周末去，不是那个场景。而且<b>兴坪旅游客运站离你酒店只有 300 米</b>（步行 3 分钟，新榕街上），去县城的中巴 ¥15 一位、20 分钟一班——那篇帖子的结论「住客运站边上」你已经天然做到了。
+  </div>
+
+  <div class="note warn">
+    <span class="h">③ D2 下午 <b id="lastCall">17:15</b> 之前必须离开西街</span>
+    西街到阳朔站 <b>33.8 公里、41 分钟</b>（高德实测），中间还要绕回酒店拿寄存的行李。
+    这是全程唯一真正会误事的地方，其他都能糊弄过去。具体倒推见 <a href="#d2" style="color:var(--clay);font-weight:600">第二天</a> 末尾的警戒线。
+  </div>
+</section>
+
+<!-- ══════════ D1 ══════════ -->
+<section id="d1">
+  <h2><span class="n">03</span>第一天 · 兴坪，不用出镇</h2>
+  <p class="lede">
+    今天一辆车都不用打。租一辆电驴（¥20–30/天），把兴坪沿江那条路骑透——20 元背景图、朝板山、冷水渡口全在这条线上。
+    傍晚坐码头拼车去对岸看日落。
+  </p>
+
+  <div class="day">
+    <div class="day-hd"><span class="tag">DAY 1</span><span class="ttl">兴坪片</span><span class="dt" id="d1date"></span></div>
+
+    <div class="tl" data-t="0" data-dur="8">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">阳朔站下车</div>
+      <div class="det">站在兴坪镇北边，<em>不在县城</em>。出站步行约 8 分钟到打车点。</div>
+      <div class="acts"><a class="act-btn" href="https://uri.amap.com/marker?position=110.568081,24.960139&name=阳朔站&src=ys&coordinate=gaode&callnative=1" target="_blank">阳朔站位置</a></div>
+    </div>
+
+    <div class="tl" data-t="8" data-dur="17">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">拼车 / 打车去酒店</div>
+      <div class="det">
+        车程 <b>7.5 公里 / 11 分钟</b>。站前有拼车 <span class="money">¥30/人</span>，滴滴整车约 <span class="money">¥40–60</span>。
+        小红书评论区反复提到的一招：<em>提前一天私信拼车师傅，让他到点在出站口举牌接</em>，比现场找便宜也快。
       </div>
     </div>
 
-    <div class="card">
-      <h2><span class="bar"></span>D2 · 县城片（跨区一次，先退房寄存行李）</h2>
-      <div class="timeline">
-        <div class="tl d2"><div class="time">08:30</div><div class="act">退房 → 遇龙河水厄底码头</div><div class="dist">32.6km / 46 分钟</div></div>
-        <div class="tl d2"><div class="time">09:30</div><div class="act">遇龙河竹筏「水厄底—万景」段</div><div class="dist">约 1 小时 · 双人筏 <span class="badge paid">¥198起</span> · 提前公众号买票</div></div>
-        <div class="tl d2"><div class="time">11:00</div><div class="act">十里画廊骑行 + 网红秋千</div><div class="dist">水厄底 → 十里画廊仅 823m · <span class="badge free">免费</span></div></div>
-        <div class="tl d2"><div class="time">12:30</div><div class="act">午餐</div><div class="dist">—</div></div>
-        <div class="tl d2"><div class="time">14:00</div><div class="act">富里桥（古桥拍照）</div><div class="dist">15km / 32 分钟 · <span class="badge free">免费</span></div></div>
-        <div class="tl d2"><div class="time">15:30</div><div class="act">阳朔西街（逛 + 拍照）</div><div class="dist">13.9km / 24 分钟 · <span class="badge free">免费</span></div></div>
-        <div class="tl d2"><div class="time">18:00</div><div class="act">西街晚餐（必吃榜）</div><div class="dist">—</div></div>
-        <div class="tl d2"><div class="time">18:45</div><div class="act">西街 → 阳朔站</div><div class="dist">约 46 分钟</div></div>
-        <div class="tl d2"><div class="time">20:00</div><div class="act">高铁返程广州</div><div class="dist">—</div></div>
+    <div class="tl" data-t="25" data-dur="25">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">到酒店，放行李</div>
+      <div class="det">兴坪镇新榕街63号。若房间没好，先寄存行李出门，下午回来再办。</div>
+      <div class="acts">
+        <a class="act-btn" href="https://uri.amap.com/navigation?to=110.533487,24.917910,桂林阳朔腾昇希尔顿花园酒店&mode=car&src=ys&coordinate=gaode&callnative=1" target="_blank">导航去酒店</a>
+        <a class="act-btn tel" href="tel:07738758666">0773-8758666</a>
       </div>
     </div>
-  </section>
 
-  <section id="mapsec">
-    <div class="card">
-      <h2><span class="bar"></span>交互地图 · 点对点耗时</h2>
-      <p class="muted">点击点位看详情；在地图上先点「起点」再点「终点」，自动计算实时驾车耗时。</p>
-      <div class="map-tools">
-        <button class="btn active" id="bAll">全部</button>
-        <button class="btn" id="bD1">D1 兴坪片</button>
-        <button class="btn d2" id="bD2">D2 县城片</button>
+    <div class="tl" data-t="50" data-dur="55">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">午饭：吃米粉，别点啤酒鱼</div>
+      <div class="det">
+        这条是小红书上少见的一致意见。两拨在兴坪吃过啤酒鱼的人都说难吃：
+        「兴坪啤酒鱼真的不好吃，阳朔的也不好吃」「7 人吃了 625，又贵又不好吃」。
+        本地人自己也不去餐馆吃啤酒鱼——那东西<em>利润高才店多</em>，不是好吃才店多。
+        古镇老街的米粉 <span class="money">¥15</span> 加个煎蛋 <span class="money">¥3</span>，卤牛肉给得足，评价反而好。
       </div>
-      <div id="map"></div>
-      <div class="legend">
-        <span><b>1</b>兴坪希尔顿</span><span><b>2</b>兴坪古镇</span><span><b>3</b>20元背景图</span><span><b>4</b>相公山</span>
-        <span class="d2"><b>5</b>水厄底码头</span><span class="d2"><b>6</b>十里画廊</span><span class="d2"><b>7</b>富里桥</span><span class="d2"><b>8</b>阳朔西街</span>
-      </div>
-      <div class="query">
-        <div class="qstatus" id="qStatus">👆 点击地图点位：先选<b>起点</b>，再点<b>终点</b>自动算耗时</div>
-        <div class="qresult" id="qResult"></div>
-        <div class="qbtn">
-          <button class="btn" id="refreshBtn" disabled>🔄 刷新实时路况</button>
-          <button class="btn" id="clearBtn">清除选择</button>
-        </div>
-      </div>
-      <div class="tip">⏱️ 点对点耗时用高德实时驾车规划（含路况）。特例：<b>相公山(4)</b> 隔漓江，自驾要绕阳朔大桥（约 75 分钟），走「轮渡 ¥5 + 观光车」只需约 25 分钟。</div>
     </div>
-  </section>
 
-  <section id="budget">
-    <div class="card">
-      <h2><span class="bar"></span>预算明细（2人 · 舒适档）</h2>
-      <table>
-        <tr><th>项目</th><th>明细</th><th style="text-align:right;">金额</th></tr>
-        <tr><td>高铁</td><td>广州南 ↔ 阳朔 二等座，2人往返</td><td style="text-align:right;">约 ¥660</td></tr>
-        <tr><td>住宿</td><td>兴坪希尔顿花园，1晚</td><td style="text-align:right;">约 ¥600</td></tr>
-        <tr><td>竹筏</td><td>遇龙河「水厄底—万景」双人筏</td><td style="text-align:right;">约 ¥255</td></tr>
-        <tr><td>门票</td><td>相公山 ¥60×2（或老寨山免费）</td><td style="text-align:right;">约 ¥120</td></tr>
-        <tr><td>餐饮</td><td>2人 × 2天</td><td style="text-align:right;">约 ¥1000</td></tr>
-        <tr><td>当地交通</td><td>轮渡 + 观光车 + 电动车 + 打车</td><td style="text-align:right;">约 ¥200</td></tr>
-        <tr><td colspan="2" style="font-weight:700;">合计</td><td style="text-align:right;font-weight:700;">约 ¥2835</td></tr>
-      </table>
-      <div class="total">💰 2人舒适档预计 ¥2800–3000（不含购物）</div>
-      <div class="muted" style="margin-top:10px;">三档参考：穷游约 ¥1800 ｜ 舒适约 ¥2800 ｜ 奢华约 ¥5000+</div>
-    </div>
-  </section>
-
-  <section id="tips">
-    <div class="card">
-      <h2><span class="bar"></span>小红书避坑干货</h2>
-      <ul>
-        <li><b>相公山省钱</b>：观景台 ¥60，不想买票走 <b>老寨山</b>（兴坪码头旁，免费）。自驾绕阳朔大桥 75 分钟，务必走轮渡+观光车。</li>
-        <li><b>20元背景图机位</b>：90% 的人拍错，正确机位在兴坪码头/朝板山一带。</li>
-        <li><b>遇龙河竹筏</b>：选「水厄底—万景」段，务必提前公众号买票。</li>
-        <li><b>相公山日出</b>：日出要凌晨 4 点起（观景台 05:30–18:00），不早起就白天去。</li>
-        <li><b>西街美食</b>：啤酒鱼、田螺酿、桂林米粉，避开主街宰客店。</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h2><span class="bar"></span>旅行清单</h2>
-      <div>
-        <span class="pill">身份证</span><span class="pill">高铁票</span><span class="pill">充电宝</span><span class="pill">防晒</span>
-        <span class="pill">帽子</span><span class="pill">运动鞋</span><span class="pill">雨具</span><span class="pill">常用药</span>
-        <span class="pill">20元纸币(拍照)</span><span class="pill">换洗衣物</span>
+    <div class="tl" data-t="105" data-dur="15">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">租电驴</div>
+      <div class="det">
+        酒店前台或古镇路边都有，<span class="money">¥20–30/天</span>，有人在酒店租到 ¥20。
+        押金 <span class="money">¥100–200 现金</span>，<em>提前备好现金和身份证</em>。
+        取车拍一圈视频存证，别租加了遮阳伞的（挡风易翻）和挎斗车。
       </div>
     </div>
-  </section>
 
-  <div class="foot">数据来源：高德地图（实时路程/耗时）+ 小红书（真实攻略）· 生成于 2026-09-09 · 时间以实际车票为准</div>
-</div>
+    <div class="tl" data-t="120" data-dur="30">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">兴坪古镇 → 乾元桥 → 20 元背景图</div>
+      <div class="det">
+        骑行 10 分钟。<b>机位在漓江景区售票厅那侧</b>，免费，不用买票就能拍。
+        <em>下午这个点是大逆光</em>，人像基本拍不出——留个位置感就行，好片等太阳再低一点回来补，或明早顺路。
+        想拍鱼鹰的话码头一排师傅带道具摆拍，<span class="money">¥20/人</span>，远一点的 ¥10。
+      </div>
+      <div class="acts"><a class="act-btn" href="https://uri.amap.com/navigation?to=110.529747,24.916167,20元人民币背景图&mode=walk&src=ys&coordinate=gaode&callnative=1" target="_blank">导航</a></div>
+    </div>
+
+    <div class="tl" data-t="150" data-dur="80">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">沿临江路骑到冷水渡口</div>
+      <div class="det">
+        <b>这段是今天真正的好东西。</b>过乾元桥左转，沿临江路一直骑，路只有一条不会迷；
+        骑到底就是冷水渡口，纯骑 20 分钟，但沿途一直有江景和机位，实际按 1 小时算，走走停停。
+        导航直接输 <b>「朝板山」</b> 就会拐上这条路。渡口有 <span class="money">¥5</span> 的轮渡可以过江。
+      </div>
+      <div class="acts">
+        <a class="act-btn" href="https://uri.amap.com/navigation?to=110.513855,24.923095,朝板山&mode=car&src=ys&coordinate=gaode&callnative=1" target="_blank">导航朝板山</a>
+        <a class="act-btn" href="https://uri.amap.com/navigation?to=110.491713,24.933630,冷水渡口&mode=car&src=ys&coordinate=gaode&callnative=1" target="_blank">导航冷水渡口</a>
+      </div>
+    </div>
+
+    <div class="tl soft" data-t="230" data-dur="40">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">骑回古镇，还车 / 歇脚</div>
+      <div class="det">古镇不大，半小时逛完。找家临江的店坐会儿，等下午的日头软下来。</div>
+    </div>
+
+    <div class="tl" data-t="290" data-dur="10">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">兴坪码头集合，拼车过江看日落</div>
+      <div class="det">
+        小红书上跑这条线的车队按人头明码标价，<b>从兴坪码头出发</b>（不用跑去县城）：
+        相公山往返 <span class="money">¥60/人</span>、千里江山图往返 <span class="money">¥70/人</span>、两个一起 <span class="money">¥80/人</span>，
+        含渡船和观光车。<em>注意都不含相公山 ¥60 的门票</em>，评论区车队本人确认过。
+        今天下午去只看景不看日出，<b>建议只去千里江山图</b>，理由见下面「怎么选」。
+      </div>
+    </div>
+
+    <div class="tl" data-t="300" data-dur="35">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">到千里江山图观景台</div>
+      <div class="det">大型水墨画机位，山水层层叠叠那张就是这里。车程约 35–40 分钟。</div>
+      <div class="acts"><a class="act-btn" href="https://uri.amap.com/marker?position=110.407059,24.912430&name=千里江山图日落观景台&src=ys&coordinate=gaode&callnative=1" target="_blank">看位置</a></div>
+    </div>
+
+    <div class="tl" data-t="-SUNSET" data-dur="30">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">日落</div>
+      <div class="det" id="sunsetNote">9 月中旬阳朔日落约 18:45（按你填的日期算）。看完整个落山再走，车队会等。</div>
+    </div>
+
+    <div class="tl soft" data-t="405" data-dur="45">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">回兴坪，晚饭</div>
+      <div class="det">天黑后返程，约 40 分钟回镇上。</div>
+    </div>
+
+    <div class="tl" data-t="ABS-20:00" data-dur="20">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">⏰ 抢明天的遇龙河竹筏票</div>
+      <div class="det">
+        <em>整点放票，晚了就没有。</em>选 <b>水厄底码头 → 工农桥综合码头</b>，双人筏 ¥200，
+        时段挑 <b>11:30–12:30</b> 那档（对得上你明天的动线）。需要填两个人的身份证号，提前复制好。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ D2 ══════════ -->
+<section id="d2">
+  <h2><span class="n">04</span>第二天 · 跨区一次，之后全靠电动车</h2>
+  <p class="lede">
+    兴坪到县城单程 46 分钟，<b>今天只跨这一次</b>。到了县城之后，竹筏上岸的工农桥就是十里画廊的南端，
+    大榕树在 300 米外，西街 13 分钟车程——全在一个电动车能覆盖的圈里。
+  </p>
+
+  <div class="note">
+    <span class="h">砍掉了富里桥，说明一下</span>
+    上一版行程里的富里桥（明代古桥、出片）确实好看，但它在遇龙河上游，离县城 30 分钟车程，且周边偏僻。
+    你没有车，去程能打到、回程大概率打不到，一旦卡在那里就直接威胁到晚上的高铁。
+    这一个点不值得赌上返程——想看古桥，遇龙桥和工农桥附近就有，顺路。
+  </div>
+
+  <div class="day">
+    <div class="day-hd d2"><span class="tag">DAY 2</span><span class="ttl">县城片</span><span class="dt" id="d2date"></span></div>
+
+    <div class="tl d2" data-t2="ABS-08:30" data-dur="60">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">起床，酒店早餐</div>
+      <div class="det">不用早起，今天第一个硬时间是竹筏。</div>
+    </div>
+
+    <div class="tl d2" data-t2="ABS-09:30" data-dur="15">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">退房，行李<em>寄存在酒店</em></div>
+      <div class="det">
+        <b>别带行李去县城</b>——竹筏上放不下，一天拖着也累。
+        晚上返程时让司机在酒店门口停两分钟取走，路线上顺得过来（下面警戒线已经把这段时间算进去了）。
+      </div>
+    </div>
+
+    <div class="tl d2" data-t2="ABS-09:45" data-dur="15">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">步行 300 米到兴坪旅游客运站</div>
+      <div class="det">新榕街与新街交叉口北 100 米，就在酒店这条街上，3 分钟走到。</div>
+      <div class="acts">
+        <a class="act-btn" href="https://uri.amap.com/navigation?to=110.531854,24.917977,兴坪旅游客运站&mode=walk&src=ys&coordinate=gaode&callnative=1" target="_blank">步行导航</a>
+        <a class="act-btn tel" href="tel:07738702225">0773-8702225</a>
+      </div>
+    </div>
+
+    <div class="tl d2" data-t2="ABS-10:00" data-dur="55">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">中巴去阳朔汽车站</div>
+      <div class="det">
+        <span class="money">¥15/人</span>，约 20 分钟一班，<b>28 公里、35 分钟</b>（沿途招手停，按 45–60 分钟算稳妥）。
+        赶时间就打车，<span class="money">¥100–150/车</span>，35 分钟。
+        <em>兴坪回县城的末班车是 17:30</em>，今天用不上，但记一下。
+      </div>
+    </div>
+
+    <div class="tl d2" data-t2="ABS-11:00" data-dur="30">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">阳朔汽车站 → 水厄底码头</div>
+      <div class="det">打车 <b>6.9 公里 / 15 分钟</b>，约 <span class="money">¥25–35</span>。县城打车比兴坪好打得多。</div>
+      <div class="acts">
+        <a class="act-btn" href="https://uri.amap.com/navigation?to=110.471387,24.742248,遇龙河水厄底码头&mode=car&src=ys&coordinate=gaode&callnative=1" target="_blank">导航码头</a>
+        <a class="act-btn tel" href="tel:15807836003">码头 15807836003</a>
+      </div>
+    </div>
+
+    <div class="tl d2" data-t2="ABS-11:30" data-dur="30">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">取票，等叫号</div>
+      <div class="det">
+        昨晚抢到票的话，这里<b>几乎不用排队</b>——实测帖原话是「取号坐下来吃个橘子的功夫就叫号了」。
+        取纸质票时如果自助机排长队，<em>直接去人工窗口</em>，很多人不知道人工也能换。验身份证入场。
+      </div>
+    </div>
+
+    <div class="tl d2" data-t2="ABS-12:00" data-dur="50">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">竹筏：水厄底 → 工农桥综合码头</div>
+      <div class="det">
+        3 公里、4 个坝、<b>约 40–50 分钟</b>，双人筏 <span class="money">¥200</span>。人工撑筏没有马达，很安静。
+        <em>非常晒</em>，帽子和防晒必须带，鞋会湿。真实评价里也有觉得「就那样」的——它胜在氛围不在刺激，
+        别抱着漂流的期待上去。<b>两人筏严格只能坐两人。</b>
+      </div>
+    </div>
+
+    <div class="tl d2" data-t2="ABS-12:50" data-dur="60">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">工农桥上岸，午饭</div>
+      <div class="det">上岸点就在十里画廊南端，路边有饭馆。<b>大榕树景区在 300 米外</b>，想进就进，不进也顺路看得到。</div>
+      <div class="acts"><a class="act-btn" href="https://uri.amap.com/marker?position=110.490510,24.734295&name=工农桥综合码头&src=ys&coordinate=gaode&callnative=1" target="_blank">上岸点位置</a></div>
+    </div>
+
+    <div class="tl d2" data-t2="ABS-13:50" data-dur="95">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">十里画廊</div>
+      <div class="det">
+        本身不收费。两种走法：路边租电动车自己骑，或者坐 <b>景区观光车 ¥10 招手即停、上车扫码</b>——
+        不想再折腾押金的话观光车更省事。<br>
+        <em>路上会有人往你身上塞花环，别接</em>，接了就要 ¥5–10。
+      </div>
+    </div>
+
+    <div class="tl d2" data-t2="ABS-15:25" data-dur="20">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">去西街</div>
+      <div class="det">工农桥 → 西街 <b>6.3 公里 / 13 分钟</b>，打车约 ¥20–30。</div>
+      <div class="acts"><a class="act-btn" href="https://uri.amap.com/navigation?to=110.495811,24.775820,阳朔西街&mode=car&src=ys&coordinate=gaode&callnative=1" target="_blank">导航西街</a></div>
+    </div>
+
+    <div class="tl d2" data-t2="ABS-15:45" data-dur="90">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">西街：逛 + 早点吃晚饭</div>
+      <div class="det">
+        <b>如果这顿要吃啤酒鱼，只记一件事：它按斤卖，¥88–168 一斤，不是一份。</b>
+        点单时让服务员<em>当面称鱼、报出总价再下锅</em>，说清「就要两斤左右」，别说「越大越好」。
+        这是被宰的唯一入口，堵上就没事了。<br>
+        主街是保底，巷子里的本地店同样的菜便宜两三成。别信路边拉客推荐的店。
+        竹筒饭 ¥30 一份不值，「野生漓江鱼」是话术——本地人在集市都买不到，全是养殖的，不要为这个加价。
+      </div>
+    </div>
+
+    <div class="tl d2" data-t2="LASTCALL" data-dur="45">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">⚠️ 离开西街，往阳朔站走</div>
+      <div class="det" id="lastCallDet">这个时刻由你的返程车次倒推，见下方警戒线。</div>
+    </div>
+
+    <div class="tl d2" data-t2="PICKUP" data-dur="10">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">路过酒店取行李</div>
+      <div class="det">让司机等 5 分钟。提前打电话让前台把行李拿到门口，别上楼。</div>
+      <div class="acts"><a class="act-btn tel" href="tel:07738758666">叫前台备行李</a></div>
+    </div>
+
+    <div class="tl d2" data-t2="ARRIVE" data-dur="0">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">到阳朔站</div>
+      <div class="det">小站，进站快，但留够 20 分钟。</div>
+    </div>
+
+    <div class="tl d2" data-t2="DEPART" data-dur="0">
+      <div class="clock" data-clock></div><div class="dot"></div>
+      <div class="act">发车回广州南</div>
+      <div class="det" id="depNote"></div>
+    </div>
+  </div>
+
+  <div class="note warn" id="backcalc">
+    <span class="h">返程警戒线（自动倒推）</span>
+    <div id="backcalcBody"></div>
+  </div>
+</section>
+
+<!-- ══════════ 地图 ══════════ -->
+<section id="map-sec">
+  <h2><span class="n">05</span>地图</h2>
+  <p class="lede">点任意点位可以直接唤起高德 App 导航。「我在哪」会用手机定位，算出你到各点的实时车程——临时改主意的时候用。</p>
+  <div class="mtools">
+    <button class="mbtn on" data-day="all">全部</button>
+    <button class="mbtn" data-day="1">D1 兴坪</button>
+    <button class="mbtn" data-day="2">D2 县城</button>
+    <button class="mbtn" id="locBtn">📍 我在哪</button>
+  </div>
+  <div id="map"></div>
+  <div class="mout" id="mapOut">点地图上的编号看详情。</div>
+</section>
+
+<!-- ══════════ 怎么选 ══════════ -->
+<section id="choose">
+  <h2><span class="n">06</span>几个要现场做的决定</h2>
+  <p class="lede">不替你定，但把代价摆出来。</p>
+
+  <h3 style="font-size:14.5px;font-weight:700;margin-top:18px">看山：相公山 / 千里江山图 / 老寨山</h3>
+  <div class="opt best">
+    <div class="oh"><span class="on">千里江山图</span><span class="pick">推荐</span><span class="op">¥70/人</span></div>
+    <div class="od">
+      兴坪码头拼车往返，含渡船和观光车，<span class="plus">不用另买门票</span>。日落机位，和你 D1 傍晚的节奏完全对得上。
+      两人合计约 <b>¥140</b>。
+    </div>
+  </div>
+  <div class="opt">
+    <div class="oh"><span class="on">相公山</span><span class="op">¥60 车 + ¥60 门票 = ¥120/人</span></div>
+    <div class="od">
+      名气最大，<span class="minus">但真正的卖点是日出云海，要凌晨 4:30 出发</span>——你这趟是「不早起」路线，白天上去只是个普通观景台。
+      小红书上「相公山 60 块门票坑到离大谱」的抱怨基本都来自白天去的人。
+      真想看日出：拼车专线 ¥50–85/人上门接，04:30 发车，那得牺牲 D1 晚上的睡眠。
+    </div>
+  </div>
+  <div class="opt">
+    <div class="oh"><span class="on">老寨山</span><span class="op">免费</span></div>
+    <div class="od">
+      就在兴坪古镇边上，<span class="plus">不用过江不用买票</span>，30 分钟登顶，能俯瞰古镇和北面漓江。
+      <span class="minus">山顶那段非常陡，且观景的乱石没有护栏</span>；雨后泥泞不要爬。
+      预算敏感或不想折腾就选它——但它看不到西侧漓江，和相公山的机位不是一回事，别当成完全平替。
+    </div>
+  </div>
+
+  <h3 style="font-size:14.5px;font-weight:700;margin-top:22px">D2 早上：中巴还是打车</h3>
+  <div class="opt best">
+    <div class="oh"><span class="on">兴坪客运站中巴</span><span class="pick">推荐</span><span class="op">¥15/人</span></div>
+    <div class="od">
+      酒店走 300 米就上车，20 分钟一班，不用等派单。<span class="minus">沿途招手停，可能拖到 60 分钟</span>，
+      所以我把出发时间放在 10:00，给竹筏留了 1.5 小时余量。
+    </div>
+  </div>
+  <div class="opt">
+    <div class="oh"><span class="on">滴滴 / 打车</span><span class="op">¥100–150/车</span></div>
+    <div class="od">
+      35 分钟，直达码头不用在汽车站中转。两人算下来比中巴贵 ¥70–120，买的是确定性。
+      <span class="minus">兴坪的运力确实比县城薄</span>，要打车建议前一晚就约。
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ Plan B ══════════ -->
+<section id="planb">
+  <h2><span class="n">07</span>出岔子的时候</h2>
+  <p class="lede">按发生概率排的。</p>
+
+  <details>
+    <summary>竹筏票没抢到</summary>
+    <div class="dbody">
+      <p><b>就近替代：</b>同在工农桥的<b>万景码头八人筏休闲漂</b>，<b>¥45/人</b>，2 公里往返约 50 分钟，
+      <b>现场买票、基本不排队</b>。景色是同一段水，只是船大人多、没有过坝。两人 ¥90，比双人筏还省一半。</p>
+      <p><b>时间上更省：</b>直接跳过竹筏，把整个下午给十里画廊 + 西街，晚饭吃得从容些。
+      遇龙河真实评价两极——有人觉得「最值得的一笔」，也有人觉得「又晒又热又无聊」，没坐上不必觉得亏。</p>
+      <p><b>不建议：</b>为了补票跑去金龙桥段（¥320/筏，在县城另一头），来回车程会吃掉你下午所有时间。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>下雨</summary>
+    <div class="dbody">
+      <p><b>竹筏：</b>小雨照漂，筏上有斗笠/雨衣卖；<b>大雨或上游涨水会停运</b>，票可退。出发前打码头电话
+      <a href="tel:15807836003" style="color:var(--river);font-weight:600">158-0783-6003</a> 问一句，别白跑。</p>
+      <p><b>看山：</b>千里江山图和相公山雨天基本白去，日落没有。但<b>雨后转晴是拍云海最好的时机</b>，
+      如果 D1 下午下雨、傍晚放晴，反而要抓住。</p>
+      <p><b>雨天改这样走：</b>D1 老寨山换成古镇喝茶 + 早点吃饭；D2 竹筏改期或退，直接十里画廊坐观光车（有棚）+ 西街泡一下午。
+      兴坪镇内下雨还有个坏处——<b>会堵车</b>，旺季有人进出各堵一小时。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>打不到车 / 中巴刚走</summary>
+    <div class="dbody">
+      <p><b>兴坪去县城：</b>客运站 20 分钟一班，最长等 20 分钟，这是兜底。</p>
+      <p><b>去阳朔站：</b>有<b>高铁专线 2 路，¥5</b>，阳朔站↔兴坪汽车站对开（兴坪端 07:30–19:10）。
+      县城那边在疾控中心附近有「高铁换乘站」，每天十几班对开，约 ¥20/人。</p>
+      <p><b>最后手段：</b>县城到阳朔站有<b>拼车 ¥30/人、上门接</b>，需要提前联系；小红书上跑这条线的车队很多，
+      出发前一天加一个存着，比现场干等强。</p>
+      <p><b>别做的事：</b>在兴坪镇上等滴滴等到误车。这里运力薄，宁可提前 30 分钟出发。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>时间不够了，砍什么</summary>
+    <div class="dbody">
+      <p>按「先砍哪个损失最小」排序：</p>
+      <p><b>1. 十里画廊</b>——骑一段和骑全程体验差别不大，砍一半省 40 分钟。</p>
+      <p><b>2. 西街</b>——它本质是条商业街，「游客的天堂」这个说法在小红书上是反着用的。吃完饭就能走。</p>
+      <p><b>3. 大榕树</b>——就在上岸点旁边，进不进都行。</p>
+      <p><b>不能砍：</b>返程那 41 分钟车程和取行李的 10 分钟。宁可少玩一小时，不要压这个。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>关于兴坪，一个要说在前面的分歧</summary>
+    <div class="dbody">
+      <p>小红书上有一派意见明确说「兴坪真没啥，建议住遇龙河或县城」。这话不是全无道理——
+      兴坪镇本身小，商业配套薄，晚上没什么可逛，吃的评价也普遍不如县城。</p>
+      <p>但你这趟的具体情况反过来：<b>客运站在楼下 300 米、高铁站 11 分钟车程、20 元背景图步行可达、
+      去相公山和千里江山图的拼车就在兴坪码头集合</b>。对一个没有车的两天行程来说，这些恰好抵消了兴坪的短板。
+      D1 完全不用打车就是这么来的。</p>
+      <p>真正要接受的是：<b>晚上确实没什么夜生活</b>。所以 D1 的重点放在傍晚的日落，回来吃个饭早点休息，
+      正好接住「不早起」的 D2。</p>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════ 花费 ══════════ -->
+<section id="money">
+  <h2><span class="n">08</span>花费</h2>
+  <p class="lede">两人，按上面这套走法。<b>加粗的是查到实价的</b>，其余是区间估算。</p>
+  <table>
+    <tr><th>项目</th><th>说明</th><th class="num">两人合计</th></tr>
+    <tr><td>高铁</td><td>广州南 ↔ 阳朔 二等座往返</td><td class="num">¥660</td></tr>
+    <tr><td>住宿</td><td>希尔顿花园 1 晚（你已订）</td><td class="num">¥600±</td></tr>
+    <tr><td><b>竹筏</b></td><td><b>水厄底→工农桥 双人筏 ¥200/筏</b></td><td class="num"><b>¥200</b></td></tr>
+    <tr><td><b>千里江山图</b></td><td><b>兴坪码头拼车往返 ¥70/人，含渡船+观光车</b></td><td class="num"><b>¥140</b></td></tr>
+    <tr><td><b>电驴</b></td><td><b>D1 兴坪一天 ¥20–30</b>（押金另付，可退）</td><td class="num"><b>¥30</b></td></tr>
+    <tr><td>站↔酒店</td><td>D1 到达拼车 ¥30/人 + D2 返程整车 ¥150</td><td class="num">¥210</td></tr>
+    <tr><td><b>D2 中巴</b></td><td><b>兴坪→阳朔 ¥15/人</b></td><td class="num"><b>¥30</b></td></tr>
+    <tr><td>县城打车</td><td>汽车站→码头、工农桥→西街</td><td class="num">¥60</td></tr>
+    <tr><td>吃饭</td><td>4 顿正餐 + 零食，避开啤酒鱼陷阱的话</td><td class="num">¥500–700</td></tr>
+    <tr><td>杂项</td><td>观光车 ¥10、渡轮 ¥5、鱼鹰拍照等</td><td class="num">¥100</td></tr>
+    <tr class="sum"><td colspan="2">合计</td><td class="num">¥2530–2730</td></tr>
+  </table>
+  <div class="note">
+    比上一版报的 ¥2835 低，差额主要来自三处：竹筏是 ¥200/筏不是 ¥198/人；
+    千里江山图 ¥70/人比相公山 ¥120/人省一半；砍掉富里桥省了往返包车。
+    <br>参考：同线路的广州出发实测帖，两天一晚<b>人均不到 ¥900</b>（住县城，比你这个住宿便宜）。
+  </div>
+</section>
+
+<!-- ══════════ 离线信息 ══════════ -->
+<section id="offline">
+  <h2><span class="n">09</span>没信号也要看得见</h2>
+  <p class="lede">漓江边和山上信号都不稳。这一段不依赖地图和网络，点电话直接拨，点坐标复制。</p>
+  <div class="card">
+    <div class="info-row"><div class="k">酒店</div><div class="v">
+      桂林阳朔腾昇希尔顿花园酒店<br>兴坪镇新榕街63号 · <a href="tel:07738758666">0773-8758666</a>
+      <span class="copy" data-copy="110.533487,24.917910">复制坐标</span></div></div>
+    <div class="info-row"><div class="k">兴坪客运站</div><div class="v">
+      新榕街与新街交叉口北100米（酒店步行3分钟）· <a href="tel:07738702225">0773-8702225</a><br>
+      去阳朔县城 ¥15，约20分钟一班，末班 17:30
+      <span class="copy" data-copy="110.531854,24.917977">复制坐标</span></div></div>
+    <div class="info-row"><div class="k">阳朔站</div><div class="v">
+      高铁站，在兴坪镇北 · 酒店过去 7.5km / 11分钟<br>
+      有高铁专线2路 ¥5 到兴坪汽车站，兴坪端 07:30–19:10
+      <span class="copy" data-copy="110.568081,24.960139">复制坐标</span></div></div>
+    <div class="info-row"><div class="k">水厄底码头</div><div class="v">
+      高田镇090乡道遇龙河景区 · <a href="tel:15807836003">158-0783-6003</a><br>
+      竹筏 ¥200/双人筏，前一晚20:00放次日票
+      <span class="copy" data-copy="110.471387,24.742248">复制坐标</span></div></div>
+    <div class="info-row"><div class="k">工农桥码头</div><div class="v">
+      抗战路221号 · 竹筏上岸点，十里画廊南端<br>大榕树景区 300 米
+      <span class="copy" data-copy="110.490510,24.734295">复制坐标</span></div></div>
+    <div class="info-row"><div class="k">阳朔汽车站</div><div class="v">
+      阳朔镇千古情大道2号 · <a href="tel:07738881002">0773-8881002</a>
+      <span class="copy" data-copy="110.476927,24.778427">复制坐标</span></div></div>
+    <div class="info-row"><div class="k">关键时刻</div><div class="v" id="offTimes">—</div></div>
+  </div>
+
+  <h3 style="font-size:14.5px;font-weight:700;margin-top:22px">带什么</h3>
+  <div class="chk" id="chkList"></div>
+</section>
+
+<footer>
+  <div>
+    路程与耗时：高德地图 Web 服务 API 实测（<span id="genDate">2026-09-10</span> 拉取）。
+    票价、拼车报价、餐饮避坑：小红书 10 篇笔记正文及其评论区，已交叉比对，标注「实价」的是多来源一致的。
+    日出日落：按阳朔坐标（110.50E, 24.78N）天文公式计算。
+  </div>
+  <div style="margin-top:8px">
+    仍需你自己确认的：① 真实车次（填到最上面）② 竹筏当日票价以购票页为准
+    ③ 拼车报价是小红书车队自报价，上车前谈定总价并确认是否含门票。
+  </div>
+</footer>
+
+</div><!-- /wrap -->
 
 <script>
 window._AMapSecurityConfig = { securityJsCode: "3a716307c2cb745c2ff196f42e1c8081" };
 </script>
-<script src="https://webapi.amap.com/maps?v=2.0&key=ae8fec4ce74205a331f6c526069cee93&plugin=AMap.Driving"></script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=ae8fec4ce74205a331f6c526069cee93&plugin=AMap.Driving,AMap.Geolocation"></script>
 <script>
-var P = [
-  {id:1,name:"兴坪希尔顿花园",lng:110.533487,lat:24.917910,day:1,type:"住宿",ticket:"住宿",note:"D1/D2 大本营，距阳朔站约10分钟"},
-  {id:2,name:"兴坪古镇",lng:110.530606,lat:24.916611,day:1,type:"古镇",ticket:"免费",note:"老街+码头，午餐啤酒鱼/漓江鱼"},
-  {id:3,name:"20元背景图",lng:110.529747,lat:24.916167,day:1,type:"打卡",ticket:"免费",note:"兴坪码头/朝板山机位，步行4分钟"},
-  {id:4,name:"相公山/千里江山",lng:110.483707,lat:24.923009,day:1,type:"观景",ticket:"¥60",note:"漓江第一湾全景；轮渡+观光车约25分钟"},
-  {id:5,name:"遇龙河水厄底码头",lng:110.471290,lat:24.742536,day:2,type:"竹筏",ticket:"¥198起",note:"「水厄底—万景」段，提前公众号买票"},
-  {id:6,name:"十里画廊",lng:110.476517,lat:24.749369,day:2,type:"骑行",ticket:"免费",note:"骑行/电瓶车，网红秋千，距水厄底仅823m"},
-  {id:7,name:"富里桥",lng:110.388036,lat:24.826747,day:2,type:"古桥",ticket:"免费",note:"明代古桥，拍照出片"},
-  {id:8,name:"阳朔西街",lng:110.496481,lat:24.776954,day:2,type:"美食",ticket:"免费",note:"必吃榜餐厅+夜景"}
-];
-// 高德驾车耗时矩阵（分钟），行=起点列=终点，索引0..7对应点1..8（实时接口不可用时兜底）
-var TMIN = [
-  [1,3,3,74,45,41,51,41],[2,0,2,75,46,42,52,42],[2,2,0,75,46,43,52,42],
-  [78,78,78,0,58,57,40,49],[47,48,48,58,0,5,34,27],[43,44,44,56,4,0,32,23],
-  [52,53,53,39,34,31,0,24],[42,43,43,46,25,21,23,0]
-];
-var KM = [
-  [0.1,0.4,0.6,52.7,32.5,31.7,39.5,27.8],[0.4,0,0.5,52.8,32.8,31.9,39.7,28.0],
-  [0.6,0.5,0,53.1,32.9,32.1,39.8,28.2],[52.6,52.8,53.0,0,32.1,32.0,21.9,27.1],
-  [32.5,32.8,32.9,32.1,0,0.8,15.1,9.5],[31.7,31.9,32.1,32.0,0.8,0,15.0,8.7],
-  [39.4,39.7,39.8,21.9,15.1,15.0,0,13.9],[27.8,28.0,28.2,27.1,9.5,8.7,13.9,0]
-];
-var SEGS = [
-  {a:1,b:2,label:"3min"},{a:2,b:3,label:"步行4min"},{a:3,b:4,label:"轮渡+观光车~25min"},
-  {a:1,b:5,label:"46min 跨区",dash:true},{a:5,b:6,label:"4min"},{a:6,b:7,label:"32min"},{a:7,b:8,label:"24min"}
+(function(){
+"use strict";
+
+/* ══════════ 数据 ══════════ */
+var PTS = [
+  {id:1, day:1, name:"希尔顿花园酒店",   lng:110.533487, lat:24.917910, info:"兴坪镇新榕街63号", tel:"0773-8758666"},
+  {id:2, day:1, name:"兴坪旅游客运站",   lng:110.531854, lat:24.917977, info:"去县城 ¥15 · 20分钟一班 · 末班17:30", tel:"0773-8702225"},
+  {id:3, day:1, name:"20元背景图",       lng:110.529747, lat:24.916167, info:"漓江景区售票厅侧 · 免费 · 下午逆光"},
+  {id:4, day:1, name:"朝板山",           lng:110.513855, lat:24.923095, info:"沿江骑行线的中段 · 导航输这里"},
+  {id:5, day:1, name:"冷水渡口",         lng:110.491713, lat:24.933630, info:"骑行终点 · 轮渡 ¥5 过江"},
+  {id:6, day:1, name:"千里江山图观景台", lng:110.407059, lat:24.912430, info:"日落机位 · 兴坪码头拼车 ¥70/人往返"},
+  {id:7, day:1, name:"相公山观景台",     lng:110.483707, lat:24.923009, info:"车 ¥60/人 + 门票 ¥60/人 · 卖点是日出"},
+  {id:8, day:1, name:"阳朔站(高铁)",     lng:110.568081, lat:24.960139, info:"酒店 7.5km / 11分钟"},
+  {id:9, day:2, name:"阳朔汽车站",       lng:110.476927, lat:24.778427, info:"千古情大道2号", tel:"0773-8881002"},
+  {id:10,day:2, name:"水厄底码头",       lng:110.471387, lat:24.742248, info:"竹筏起点 ¥200/双人筏", tel:"15807836003"},
+  {id:11,day:2, name:"工农桥综合码头",   lng:110.490510, lat:24.734295, info:"竹筏上岸 · 十里画廊南端"},
+  {id:12,day:2, name:"大榕树景区",       lng:110.486134, lat:24.731619, info:"距上岸点 300 米"},
+  {id:13,day:2, name:"阳朔西街",         lng:110.495811, lat:24.775820, info:"啤酒鱼按斤卖 ¥88-168/斤，当面称"}
 ];
 
-var map=null, markers={}, overlaysD1=[], overlaysD2=[], driving=null;
-var selOrigin=null, selDest=null, queryLine=null, highlightA=null, lastPair=null;
+var PACK = ["身份证×2","高铁票","充电宝","防晒霜","帽子","墨镜","雨衣/伞",
+            "运动鞋","可湿的鞋","换洗衣物","常用药","现金(租车押金)","20元纸币","干毛巾"];
 
-function pxy(p){ return [p.lng, p.lat]; }
+var LS = "ys_guide_v2";
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+var pad = function(n){ return (n<10?"0":"")+n; };
+var hhmm = function(m){ m=((m%1440)+1440)%1440; return pad(Math.floor(m/60))+":"+pad(m%60); };
+var toMin = function(s){ var p=(s||"0:0").split(":"); return (+p[0])*60+(+p[1]); };
 
-function numHtml(p, sel){
-  return '<div class="num'+(p.day===2?' d2':'')+(sel?' sel':'')+'">'+p.id+'</div>';
+/* ── 日落计算（阳朔 110.50E 24.78N） ── */
+function sunset(dateStr){
+  var d = new Date(dateStr+"T12:00:00");
+  if (isNaN(d)) return 18*60+45;
+  var N = Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(d.getFullYear(),0,0))/864e5);
+  var lat=24.78, lng=110.50, rad=Math.PI/180;
+  var lngHour=lng/15, t=N+(18-lngHour)/24;
+  var M=0.9856*t-3.289;
+  var L=(M+1.916*Math.sin(M*rad)+0.020*Math.sin(2*M*rad)+282.634+360)%360;
+  var RA=(Math.atan(0.91764*Math.tan(L*rad))/rad+360)%360;
+  RA += (Math.floor(L/90)*90 - Math.floor(RA/90)*90); RA/=15;
+  var sinDec=0.39782*Math.sin(L*rad), cosDec=Math.cos(Math.asin(sinDec));
+  var cosH=(Math.cos(90.8333*rad)-sinDec*Math.sin(lat*rad))/(cosDec*Math.cos(lat*rad));
+  if (cosH>1||cosH<-1) return 18*60+45;
+  var H=Math.acos(cosH)/rad/15;
+  var T=H+RA-0.06571*t-6.622, UT=((T-lngHour)%24+24)%24, local=(UT+8)%24;
+  return Math.round(local*60);
 }
 
-function init(){
-  if(typeof AMap === "undefined"){ document.getElementById("map").innerHTML='<p class="muted" style="padding:20px">高德地图加载失败，请检查网络。</p>'; return; }
-  map = new AMap.Map("map", {zoom:11, center:[110.48,24.83], viewMode:"2D"});
+/* ══════════ 状态 ══════════ */
+var S = { date:"", arr:"11:32", dep:"19:16", packed:{} };
+try { var raw=localStorage.getItem(LS); if(raw) S=Object.assign(S,JSON.parse(raw)); } catch(e){}
+function save(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
 
-  // 点位 marker
-  P.forEach(function(p){
-    var m = new AMap.Marker({ position: pxy(p), content: numHtml(p,false), anchor:"center", zIndex:100 });
-    m.on("click", function(){ onMarkerClick(p); });
-    m.setMap(map);
-    markers[p.id]=m;
-    (p.day===1?overlaysD1:overlaysD2).push(m);
+if (!S.date){
+  var t = new Date(); t.setDate(t.getDate()+ (6 - t.getDay() + 7) % 7 || 7);
+  S.date = t.getFullYear()+"-"+pad(t.getMonth()+1)+"-"+pad(t.getDate());
+}
+
+/* ══════════ 时刻计算 ══════════ */
+var CAR_XIJIE_STATION = 41;   // 西街→阳朔站 高德实测
+var CAR_XIJIE_HOTEL   = 45;   // 西街→酒店 估
+var CAR_HOTEL_STATION = 11;   // 酒店→阳朔站 高德实测
+var LUGGAGE = 10;             // 取行李
+var BUFFER  = 25;             // 进站+缓冲
+
+function computeD2Back(){
+  var dep = toMin(S.dep);
+  var arrive  = dep - BUFFER;                          // 到站
+  var pickup  = arrive - CAR_HOTEL_STATION - LUGGAGE;  // 到酒店取行李
+  var leave   = pickup - CAR_XIJIE_HOTEL;              // 离开西街
+  var direct  = dep - BUFFER - CAR_XIJIE_STATION;      // 不取行李直达的最晚
+  return { dep:dep, arrive:arrive, pickup:pickup, leave:leave, direct:direct };
+}
+
+function render(){
+  var arr = toMin(S.arr);
+  var ss  = sunset(S.date);
+
+  // D1：相对到站偏移
+  $$("#d1 .tl").forEach(function(el){
+    var spec = el.getAttribute("data-t"), m;
+    if (spec === "-SUNSET")            m = ss;
+    else if (spec.indexOf("ABS-")===0) m = toMin(spec.slice(4));
+    else                               m = arr + parseInt(spec,10);
+    el.setAttribute("data-abs", m);
+    el.querySelector("[data-clock]").textContent = hhmm(m);
   });
 
-  // 行程轨迹
-  [[1,2],[2,3],[3,4]].forEach(function(s){
-    var a=markers[s[0]].getPosition(), b=markers[s[1]].getPosition();
-    var pl=new AMap.Polyline({path:[a,b],strokeColor:"#667eea",strokeWeight:4,strokeOpacity:0.9});
-    pl.setMap(map); overlaysD1.push(pl);
-  });
-  [[1,5],[5,6],[6,7],[7,8]].forEach(function(s){
-    var a=markers[s[0]].getPosition(), b=markers[s[1]].getPosition();
-    var pl=new AMap.Polyline({path:[a,b],strokeColor:"#e0559a",strokeWeight:4,strokeOpacity:0.9,strokeStyle:(s[0]===1?"dashed":"solid")});
-    pl.setMap(map); overlaysD2.push(pl);
-  });
-
-  // 段时间标签
-  SEGS.forEach(function(s){
-    var a=markers[s.a].getPosition(), b=markers[s.b].getPosition();
-    var mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];
-    var t=new AMap.Text({text:s.label, position:mid, anchor:"center",
-      style:{"background":"#fff","color":"#333","font-size":"11px","padding":"2px 8px","border-radius":"10px","border":"1px solid #e5e5e5","box-shadow":"0 1px 3px rgba(0,0,0,.3)","white-space":"nowrap"}});
-    t.setMap(map);
-    (s.a<=4&&s.b<=4?overlaysD1:overlaysD2).push(t);
+  // D2
+  var B = computeD2Back();
+  $$("#d2 .tl").forEach(function(el){
+    var spec = el.getAttribute("data-t2"), m;
+    if (spec === "LASTCALL")           m = B.leave;
+    else if (spec === "PICKUP")        m = B.pickup;
+    else if (spec === "ARRIVE")        m = B.arrive;
+    else if (spec === "DEPART")        m = B.dep;
+    else                               m = toMin(spec.slice(4));
+    el.setAttribute("data-abs", m);
+    el.querySelector("[data-clock]").textContent = hhmm(m);
   });
 
-  map.setFitView(overlaysD1.concat(overlaysD2));
+  // 日期显示
+  var d1 = new Date(S.date+"T12:00:00");
+  var d2 = new Date(d1.getTime()+864e5);
+  var W = ["日","一","二","三","四","五","六"];
+  var fmt = function(d){ return (d.getMonth()+1)+"月"+d.getDate()+"日 周"+W[d.getDay()]; };
+  if(!isNaN(d1)){ $("#d1date").textContent=fmt(d1); $("#d2date").textContent=fmt(d2); }
 
-  // 实时驾车
-  AMap.plugin("AMap.Driving", function(){
-    driving = new AMap.Driving({ policy: AMap.DrivingPolicy.LEAST_TIME, hideMarkers:true });
-  });
+  $("#sunsetNote").textContent = "今天日落 "+hhmm(ss)+"（按 "+S.date+" 算）。看完整个落山再走，车队会等。";
+  $("#lastCall").textContent = hhmm(B.leave);
+  $("#lastCallDet").innerHTML = "从西街出发 <b>"+CAR_XIJIE_HOTEL+" 分钟</b>到酒店，取行李 "+LUGGAGE+
+    " 分钟，再 <b>"+CAR_HOTEL_STATION+" 分钟</b>到阳朔站。这个时刻已经倒推好了。";
+  $("#depNote").textContent = "阳朔站 "+hhmm(B.dep)+" 发车。";
 
-  document.getElementById("bAll").onclick=function(){switchDay("all");};
-  document.getElementById("bD1").onclick=function(){switchDay("d1");};
-  document.getElementById("bD2").onclick=function(){switchDay("d2");};
-  document.getElementById("clearBtn").onclick=function(){resetSel();};
-  document.getElementById("refreshBtn").onclick=function(){
-    if(lastPair){
-      document.getElementById("qStatus").innerHTML='🔄 正在刷新实时路况…';
-      doQuery(lastPair.a, lastPair.b);
+  $("#backcalcBody").innerHTML =
+    "返程 <b>"+hhmm(B.dep)+"</b> 发车，往回倒推：<br>"+
+    "&nbsp;&nbsp;· <b>"+hhmm(B.arrive)+"</b> 必须到阳朔站（留 "+BUFFER+" 分钟进站）<br>"+
+    "&nbsp;&nbsp;· <b>"+hhmm(B.pickup)+"</b> 到酒店取行李（酒店→站 "+CAR_HOTEL_STATION+" 分钟）<br>"+
+    "&nbsp;&nbsp;· <b>"+hhmm(B.leave)+"</b> 最晚离开西街（西街→酒店 "+CAR_XIJIE_HOTEL+" 分钟）<br>"+
+    "<br>如果不回酒店拿行李（行李随身带了一天），最晚可以拖到 <b>"+hhmm(B.direct)+
+    "</b> 再走，西街直达阳朔站 "+CAR_XIJIE_STATION+" 分钟。<br>"+
+    "<b>不要压这条线</b>——阳朔站是小站，末班车之后没有别的选择。";
+
+  $("#offTimes").innerHTML =
+    "D1 到站 <b>"+S.arr+"</b> · 日落 <b>"+hhmm(ss)+"</b> · 抢票 <b>20:00</b><br>"+
+    "D2 离开西街 <b>"+hhmm(B.leave)+"</b> · 到站 <b>"+hhmm(B.arrive)+"</b> · 发车 <b>"+hhmm(B.dep)+"</b>";
+
+  tickNow();
+}
+
+/* ══════════ 此刻在哪 ══════════ */
+function tickNow(){
+  var box=$("#nowbox"), big=$("#nowBig"), sub=$("#nowSub");
+  var now = new Date();
+  var today = now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
+  var d1 = S.date;
+  var d2d = new Date(new Date(S.date+"T12:00:00").getTime()+864e5);
+  var d2 = isNaN(d2d) ? "" : d2d.getFullYear()+"-"+pad(d2d.getMonth()+1)+"-"+pad(d2d.getDate());
+  var which = today===d1 ? "#d1" : (today===d2 ? "#d2" : null);
+
+  $$(".tl.on").forEach(function(e){ e.classList.remove("on"); });
+
+  if (!which){
+    box.className="idle";
+    var days = Math.round((new Date(d1+"T12:00:00") - new Date(today+"T12:00:00"))/864e5);
+    if (isNaN(days)) { big.textContent="填一下出发日期"; sub.textContent=""; return; }
+    if (days>0){
+      big.textContent = "距出发还有 "+days+" 天";
+      sub.innerHTML = "出发前要做的：抢 09:02 那趟车次（快一小时）· 存一个拼车师傅微信 · 备 ¥200 现金做电驴押金";
+    } else {
+      big.textContent = "行程已结束";
+      sub.textContent = "改上面的日期可以重新启用实时提示。";
     }
-  };
+    return;
+  }
+
+  var nowM = now.getHours()*60 + now.getMinutes();
+  var items = $$(which+" .tl").map(function(el){
+    return { el:el, m:+el.getAttribute("data-abs"),
+             act:el.querySelector(".act").textContent.trim() };
+  }).sort(function(a,b){ return a.m-b.m; });
+
+  var cur=null, nxt=null;
+  for (var i=0;i<items.length;i++){
+    if (items[i].m<=nowM) cur=items[i]; else { nxt=items[i]; break; }
+  }
+
+  box.className="";
+  if (!cur){
+    big.textContent = "今天还没开始 · 第一项 "+hhmm(items[0].m)+" "+items[0].act;
+    sub.textContent = "";
+    return;
+  }
+  cur.el.classList.add("on");
+  big.textContent = cur.act;
+  var parts = [];
+  if (nxt){
+    var left = nxt.m - nowM;
+    parts.push("下一步 "+hhmm(nxt.m)+"　"+nxt.act+"（还有 "+left+" 分钟）");
+    if (left<=20) box.className="alert";
+  } else {
+    parts.push("今天最后一项了");
+  }
+  if (which==="#d2"){
+    var B=computeD2Back();
+    var toLeave = B.leave - nowM;
+    if (toLeave>0 && toLeave<=120){
+      parts.push("⚠️ 距「必须离开西街」还有 "+toLeave+" 分钟");
+      box.className="alert";
+    } else if (toLeave<=0 && nowM < B.dep){
+      parts.push("⚠️ 已过警戒线（"+hhmm(B.leave)+"），现在就往阳朔站走");
+      box.className="alert";
+    }
+  }
+  sub.innerHTML = parts.join("<br>");
 }
 
-function onMarkerClick(p){
-  // 详情
-  var info = '<b>'+p.id+'. '+p.name+'</b><br>类型：'+p.type+' ｜ 门票：'+p.ticket+'<br><span style="color:#888">'+p.note+'</span>';
-  var iw = new AMap.InfoWindow({content:'<div class="amap-info-content">'+info+'</div>',offset:new AMap.Pixel(0,-32)});
-  iw.open(map, pxy(p));
+/* ══════════ 输入绑定 ══════════ */
+$("#inDate").value=S.date; $("#inArr").value=S.arr; $("#inDep").value=S.dep;
+$("#inDate").addEventListener("change",function(){ S.date=this.value; save(); render(); });
+$("#inArr").addEventListener("change", function(){ S.arr =this.value; save(); render(); });
+$("#inDep").addEventListener("change", function(){ S.dep =this.value; save(); render(); });
 
-  if(!selOrigin){ setOrigin(p); }
-  else if(!selDest){ setDest(p); }
-  else { resetSel(); setOrigin(p); }
-}
+/* ══════════ 抢票日历提醒 ══════════ */
+$("#alarmBtn").addEventListener("click",function(){
+  var d = S.date.replace(/-/g,"");
+  var ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//yangshuo//CN","BEGIN:VEVENT",
+    "DTSTART;TZID=Asia/Shanghai:"+d+"T195500","DTEND;TZID=Asia/Shanghai:"+d+"T201500",
+    "SUMMARY:抢遇龙河竹筏票（水厄底→工农桥 ¥200双人筏）",
+    "DESCRIPTION:20:00整点放次日票。选11:30-12:30时段。需要两人身份证号。",
+    "BEGIN:VALARM","TRIGGER:-PT5M","ACTION:DISPLAY","DESCRIPTION:5分钟后放票","END:VALARM",
+    "END:VEVENT","END:VCALENDAR"].join("\r\n");
+  var a=document.createElement("a");
+  a.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);
+  a.download="抢竹筏票.ics"; a.click();
+  this.textContent="已生成日历文件 ✓";
+});
 
-function setOrigin(p){
-  selOrigin=p; selDest=null;
-  markers[p.id].setContent(numHtml(p,true));
-  document.getElementById("qStatus").innerHTML='起点已选：<b>'+p.name+'</b>，请再点击<b>终点</b>';
-  document.getElementById("qResult").innerHTML='';
-  if(highlightA){highlightA.setMap(null);highlightA=null;}
-  highlightA=new AMap.Circle({center:pxy(p),radius:500,strokeColor:"#ffb703",strokeWeight:3,fillColor:"#ffb703",fillOpacity:0.25});
-  highlightA.setMap(map);
-}
-
-function setDest(p){
-  selDest=p;
-  if(selOrigin.id===p.id){ resetSel(); return; }
-  markers[p.id].setContent(numHtml(p,true));
-  document.getElementById("qStatus").innerHTML='起点 <b>'+selOrigin.name+'</b> → 终点 <b>'+p.name+'</b>';
-  doQuery(selOrigin, p);
-}
-
-function doQuery(a,b){
-  var i=a.id-1, j=b.id-1;
-  lastPair={a:a,b:b};
-  document.getElementById("refreshBtn").disabled=false;
-  if(driving){
-    driving.search(pxy(a), pxy(b), function(status,result){
-      if(status==="complete" && result.routes && result.routes.length){
-        var r=result.routes[0];
-        show(i,j,Math.round(r.time/60),(r.distance/1000).toFixed(1),"实时");
-        drawRoute(result);
-      } else { fallback(i,j); }
+/* ══════════ 打包清单 ══════════ */
+(function(){
+  var box=$("#chkList");
+  PACK.forEach(function(item,i){
+    var id="pk"+i;
+    var lab=document.createElement("label");
+    lab.innerHTML='<input type="checkbox" id="'+id+'"><span>'+item+'</span>';
+    var cb=lab.querySelector("input");
+    cb.checked = !!S.packed[item];
+    if (cb.checked) lab.classList.add("done");
+    cb.addEventListener("change",function(){
+      S.packed[item]=cb.checked; save();
+      lab.classList.toggle("done",cb.checked);
     });
-  } else { fallback(i,j); }
-}
+    box.appendChild(lab);
+  });
+})();
 
-function fallback(i,j){
-  show(i,j,TMIN[i][j],KM[i][j],"估算");
-}
+/* ══════════ 复制坐标 ══════════ */
+$$(".copy").forEach(function(el){
+  el.addEventListener("click",function(){
+    var t=el.getAttribute("data-copy"), self=el;
+    var done=function(){ var o=self.textContent; self.textContent="已复制 ✓";
+                         setTimeout(function(){ self.textContent=o; },1400); };
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(done,done);
+    else { var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta);
+           ta.select(); try{document.execCommand("copy");}catch(e){} ta.remove(); done(); }
+  });
+});
 
-function now(){
-  var d=new Date();
-  return ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2)+":"+("0"+d.getSeconds()).slice(-2);
+/* ══════════ 地图 ══════════ */
+var map=null, mk={}, layer={1:[],2:[]}, meMk=null, driving=null;
+function navUrl(p){
+  return "https://uri.amap.com/navigation?to="+p.lng+","+p.lat+","+encodeURIComponent(p.name)+
+         "&mode=car&src=ys&coordinate=gaode&callnative=1";
 }
+function initMap(){
+  if (typeof AMap==="undefined"){
+    $("#map").innerHTML='<div style="padding:24px;color:#8b9499;font-size:13px;line-height:1.7">'+
+      '地图没加载出来（网络或高德 key 域名白名单的问题）。<br>'+
+      '不影响使用——上面每个点位的「导航」按钮是直接跳高德 App 的，不依赖这张图。</div>';
+    return;
+  }
+  map = new AMap.Map("map",{ zoom:11, center:[110.49,24.85], viewMode:"2D" });
+  PTS.forEach(function(p){
+    var m = new AMap.Marker({
+      position:[p.lng,p.lat], anchor:"center", zIndex:100,
+      content:'<div class="pin'+(p.day===2?' d2':'')+'">'+p.id+'</div>'
+    });
+    m.on("click",function(){
+      var html = '<b>'+p.id+'. '+p.name+'</b><br><span style="color:#5b656a">'+p.info+'</span>';
+      if (p.tel) html += '<br><a href="tel:'+p.tel.replace(/-/g,"")+'" style="color:#35657f;font-weight:600">'+p.tel+'</a>';
+      html += '<br><a class="nav-lnk" href="'+navUrl(p)+'" target="_blank">用高德导航过去</a>';
+      new AMap.InfoWindow({ content:'<div class="amap-info-content">'+html+'</div>',
+                            offset:new AMap.Pixel(0,-16) }).open(map,[p.lng,p.lat]);
+      $("#mapOut").innerHTML = "<b>"+p.name+"</b> — "+p.info;
+    });
+    m.setMap(map); mk[p.id]=m; layer[p.day].push(m);
+  });
+  // D1 骑行线 + D2 动线
+  var line=function(ids,color,dash){
+    var path=ids.map(function(i){ var p=PTS.filter(function(x){return x.id===i;})[0]; return [p.lng,p.lat]; });
+    var pl=new AMap.Polyline({path:path,strokeColor:color,strokeWeight:3,strokeOpacity:.75,
+      strokeStyle:dash?"dashed":"solid"});
+    pl.setMap(map); return pl;
+  };
+  layer[1].push(line([1,3,4,5],"#2f6b57",false));
+  layer[1].push(line([1,6],"#2f6b57",true));
+  layer[2].push(line([2,9,10,11,13],"#35657f",false));
+  map.setFitView();
+  AMap.plugin("AMap.Driving",function(){
+    driving = new AMap.Driving({ policy:AMap.DrivingPolicy.LEAST_TIME, hideMarkers:true });
+  });
+}
+$$(".mbtn[data-day]").forEach(function(b){
+  b.addEventListener("click",function(){
+    $$(".mbtn[data-day]").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    var d=b.getAttribute("data-day");
+    [1,2].forEach(function(k){
+      layer[k].forEach(function(o){ (d==="all"||d===String(k)) ? o.show() : o.hide(); });
+    });
+    if (map) map.setFitView(d==="all" ? null : layer[d]);
+  });
+});
+$("#locBtn").addEventListener("click",function(){
+  var out=$("#mapOut");
+  if (!map){ out.textContent="地图没加载，定位用不了。"; return; }
+  out.textContent="正在定位…";
+  AMap.plugin("AMap.Geolocation",function(){
+    var geo=new AMap.Geolocation({enableHighAccuracy:true,timeout:10000});
+    geo.getCurrentPosition(function(status,r){
+      if (status!=="complete"){ out.textContent="定位失败（需要 HTTPS 且允许定位权限）。"; return; }
+      var pos=[r.position.lng,r.position.lat];
+      if (meMk) meMk.setMap(null);
+      meMk=new AMap.Marker({position:pos,anchor:"center",zIndex:200,
+        content:'<div class="pin me">我</div>'});
+      meMk.setMap(map);
+      out.innerHTML="正在算你到各点的车程…";
+      var results=[], pending=PTS.length;
+      PTS.forEach(function(p){
+        if (!driving){ pending--; return; }
+        driving.search(pos,[p.lng,p.lat],function(st,res){
+          if (st==="complete" && res.routes && res.routes.length){
+            results.push({n:p.name, min:Math.round(res.routes[0].time/60),
+                          km:(res.routes[0].distance/1000).toFixed(1)});
+          }
+          if (--pending===0) show();
+        });
+      });
+      function show(){
+        results.sort(function(a,b){ return a.min-b.min; });
+        out.innerHTML = "<b>从你现在的位置出发（驾车实时）：</b><br>" +
+          results.slice(0,6).map(function(r){
+            return "· "+r.n+"　<b>"+r.min+" 分钟</b>　"+r.km+" km";
+          }).join("<br>");
+      }
+      setTimeout(function(){ if(pending>0){ pending=0; show(); } },12000);
+    });
+  });
+});
 
-function show(i,j,min,km,tag){
-  document.getElementById("qResult").innerHTML = P[i].name+" → "+P[j].name+"：约 <b>"+min+" 分钟</b> ｜ "+km+" 公里 <small>（"+tag+"驾车 · 更新于 "+now()+"）</small>";
-}
-
-function drawRoute(result){
-  var path=[];
-  try{
-    result.routes[0].steps.forEach(function(st){ (st.path||[]).forEach(function(pt){path.push(pt);}); });
-  }catch(e){}
-  if(queryLine){queryLine.setMap(null);}
-  if(path.length<2){ path=[pxy(selOrigin),pxy(selDest)]; }
-  queryLine=new AMap.Polyline({path:path,strokeColor:"#ff4d4f",strokeWeight:5,strokeOpacity:0.85,strokeStyle:"solid",zIndex:50});
-  queryLine.setMap(map);
-  map.setFitView([pxy(selOrigin),pxy(selDest),path]);
-}
-
-function resetSel(){
-  selOrigin=null; selDest=null; lastPair=null;
-  document.getElementById("refreshBtn").disabled=true;
-  P.forEach(function(p){ markers[p.id].setContent(numHtml(p,false)); });
-  if(queryLine){queryLine.setMap(null);queryLine=null;}
-  if(highlightA){highlightA.setMap(null);highlightA=null;}
-  document.getElementById("qStatus").innerHTML='👆 点击地图点位：先选<b>起点</b>，再点<b>终点</b>自动算耗时';
-  document.getElementById("qResult").innerHTML='';
-}
-
-function switchDay(d){
-  var all=overlaysD1.concat(overlaysD2);
-  all.forEach(function(o){o.hide();});
-  if(d==="all"){overlaysD1.forEach(function(o){o.show();});overlaysD2.forEach(function(o){o.show();});}
-  if(d==="d1"){overlaysD1.forEach(function(o){o.show();});}
-  if(d==="d2"){overlaysD2.forEach(function(o){o.show();});}
-  var vis=(d==="all")?all:(d==="d1"?overlaysD1:overlaysD2);
-  map.setFitView(vis);
-  ["bAll","bD1","bD2"].forEach(function(id){document.getElementById(id).classList.remove("active");});
-  document.getElementById(d==="all"?"bAll":(d==="d1"?"bD1":"bD2")).classList.add("active");
-  if(queryLine){queryLine.setMap(null);queryLine=null;}
-  if(highlightA){highlightA.setMap(null);highlightA=null;}
-  resetSel();
-}
-init();
+/* ══════════ 启动 ══════════ */
+render();
+initMap();
+setInterval(tickNow, 30000);
+document.addEventListener("visibilitychange",function(){ if(!document.hidden) tickNow(); });
+})();
 </script>
 </body>
 </html>
