@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>阳朔 · 不早起两日游攻略</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 <style>
   :root{--purple:#667eea;--purple2:#764ba2;--pink:#f093fb;--ink:#2b2b3a;--bg:#f6f7fb;--card:#fff;--muted:#8a8aa0;--d1:#667eea;--d2:#e0559a;}
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -37,16 +36,18 @@
   .tl.d2 .time{color:var(--d2);}
   .tl .act{font-size:14px;margin-top:2px;}
   .tl .dist{color:var(--muted);font-size:12px;margin-top:1px;}
-  #map{height:480px;border-radius:14px;border:1px solid #eef0f7;z-index:1;}
+  #map{height:480px;border-radius:14px;border:1px solid #eef0f7;}
   .map-tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
   .btn{background:#fff;border:1px solid #ddd;border-radius:999px;padding:7px 15px;font-size:13px;font-weight:600;color:#555;cursor:pointer;}
+  .btn:hover{border-color:var(--purple);color:var(--purple2);}
   .btn.active{background:var(--purple);border-color:var(--purple);color:#fff;}
   .btn.active.d2{background:var(--d2);border-color:var(--d2);}
-  .query{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px;background:#fafaff;border:1px solid #eef0f7;border-radius:12px;padding:14px;}
-  .query select{flex:1;min-width:130px;padding:9px 10px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff;}
-  .query .arrow{color:var(--muted);font-weight:700;}
-  .qresult{width:100%;margin-top:10px;font-size:15px;font-weight:700;color:var(--purple2);}
-  .qresult small{font-weight:400;color:var(--muted);font-size:12px;}
+  .query{margin-top:14px;background:#fafaff;border:1px solid #eef0f7;border-radius:12px;padding:14px;}
+  .qstatus{font-size:13px;color:var(--muted);}
+  .qstatus b{color:var(--purple2);}
+  .qresult{margin-top:10px;font-size:16px;font-weight:700;color:var(--purple2);min-height:22px;}
+  .qresult small{font-weight:400;color:var(--muted);font-size:12px;display:block;margin-top:2px;}
+  .qbtn{margin-top:10px;display:flex;gap:8px;}
   .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:12px;}
   .legend span{background:#f3f0ff;color:#5b4aa0;border-radius:6px;padding:3px 9px;}
   .legend span.d2{background:#fdeef5;color:#b23a74;}
@@ -59,10 +60,10 @@
   .pill{display:inline-block;background:#fdf0fb;color:#c2459a;border-radius:999px;padding:3px 11px;font-size:12px;margin:3px 3px 0 0;}
   ul{padding-left:20px;margin-top:8px;font-size:14px;}li{margin:5px 0;}
   .foot{text-align:center;color:var(--muted);font-size:12px;margin-top:30px;}
-  .leaflet-popup-content{font-size:13px;line-height:1.5;}
-  .num{width:26px;height:26px;border-radius:50%;background:var(--d1);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.35);}
+  .num{width:26px;height:26px;border-radius:50%;background:var(--d1);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.35);cursor:pointer;}
   .num.d2{background:var(--d2);}
-  .seglabel{background:#fff;color:#333;font-size:11px;padding:2px 8px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.3);white-space:nowrap;border:1px solid #e5e5e5;font-weight:600;}
+  .num.sel{box-shadow:0 0 0 4px #ffb703;}
+  .amap-info-content{font-size:13px;line-height:1.6;}
   @media(max-width:600px){#map{height:340px;}.hero h1{font-size:26px;}}
 </style>
 </head>
@@ -106,8 +107,8 @@
         <div class="tl"><div class="time">09:30</div><div class="act">广州南乘高铁出发</div><div class="dist">约 2 小时</div></div>
         <div class="tl"><div class="time">11:40</div><div class="act">抵达阳朔站 → 前往酒店</div><div class="dist">阳朔站距酒店约 10 分钟</div></div>
         <div class="tl"><div class="time">12:30</div><div class="act">兴坪古镇 + 午餐（啤酒鱼/漓江鱼）</div><div class="dist">酒店 → 兴坪古镇 3 分钟 · <span class="badge free">免费</span></div></div>
-        <div class="tl"><div class="time">14:00</div><div class="act">20元人民币背景图打卡</div><div class="dist">步行 4 分钟（307m）· 兴坪码头/朝板山机位 · <span class="badge free">免费</span></div></div>
-        <div class="tl"><div class="time">15:00</div><div class="act">相公山 / 千里江山（漓江第一湾全景）</div><div class="dist">兴坪码头轮渡 ¥5 + 观光车约 25 分钟 · 观景台 <span class="badge paid">¥60</span> / 老寨山免费</div></div>
+        <div class="tl"><div class="time">14:00</div><div class="act">20元人民币背景图打卡</div><div class="dist">步行 4 分钟 · 兴坪码头/朝板山机位 · <span class="badge free">免费</span></div></div>
+        <div class="tl"><div class="time">15:00</div><div class="act">相公山 / 千里江山（漓江第一湾全景）</div><div class="dist">轮渡 ¥5 + 观光车约 25 分钟 · 观景台 <span class="badge paid">¥60</span> / 老寨山免费</div></div>
         <div class="tl"><div class="time">17:30</div><div class="act">返回兴坪，漓江边日落</div><div class="dist">—</div></div>
         <div class="tl"><div class="time">18:30</div><div class="act">兴坪晚餐，回酒店</div><div class="dist">—</div></div>
       </div>
@@ -132,7 +133,7 @@
   <section id="mapsec">
     <div class="card">
       <h2><span class="bar"></span>交互地图 · 点对点耗时</h2>
-      <p class="muted">点击点位查看详情；下方可查任意两点间的真实驾车耗时（高德实测）。可切换天数图层。</p>
+      <p class="muted">点击点位看详情；在地图上先点「起点」再点「终点」，自动计算实时驾车耗时。</p>
       <div class="map-tools">
         <button class="btn active" id="bAll">全部</button>
         <button class="btn" id="bD1">D1 兴坪片</button>
@@ -144,13 +145,11 @@
         <span class="d2"><b>5</b>水厄底码头</span><span class="d2"><b>6</b>十里画廊</span><span class="d2"><b>7</b>富里桥</span><span class="d2"><b>8</b>阳朔西街</span>
       </div>
       <div class="query">
-        <select id="fromSel"></select>
-        <span class="arrow">→</span>
-        <select id="toSel"></select>
-        <button class="btn" id="goBtn">查耗时</button>
-        <div class="qresult" id="qResult">选择起点和终点，点「查耗时」</div>
+        <div class="qstatus" id="qStatus">👆 点击地图点位：先选<b>起点</b>，再点<b>终点</b>自动算耗时</div>
+        <div class="qresult" id="qResult"></div>
+        <div class="qbtn"><button class="btn" id="clearBtn">清除选择</button></div>
       </div>
-      <div class="tip">⏱️ 耗时/距离来自高德驾车路线规划实测。特例：<b>相公山(4)</b> 隔漓江，自驾要绕阳朔大桥（约 75 分钟）；走「兴坪码头轮渡 ¥5 + 观光车」只需约 25 分钟。</div>
+      <div class="tip">⏱️ 点对点耗时用高德实时驾车规划（含路况）。特例：<b>相公山(4)</b> 隔漓江，自驾要绕阳朔大桥（约 75 分钟），走「轮渡 ¥5 + 观光车」只需约 25 分钟。</div>
     </div>
   </section>
 
@@ -176,11 +175,11 @@
     <div class="card">
       <h2><span class="bar"></span>小红书避坑干货</h2>
       <ul>
-        <li><b>相公山省钱</b>：观景台 ¥60，不想买票走 <b>老寨山</b>（兴坪码头旁，免费，看同一片江湾）。自驾绕阳朔大桥 75 分钟，务必走轮渡+观光车。</li>
+        <li><b>相公山省钱</b>：观景台 ¥60，不想买票走 <b>老寨山</b>（兴坪码头旁，免费）。自驾绕阳朔大桥 75 分钟，务必走轮渡+观光车。</li>
         <li><b>20元背景图机位</b>：90% 的人拍错，正确机位在兴坪码头/朝板山一带。</li>
-        <li><b>遇龙河竹筏</b>：选「水厄底—万景」段，务必提前公众号买票，现场常排长队。</li>
+        <li><b>遇龙河竹筏</b>：选「水厄底—万景」段，务必提前公众号买票。</li>
         <li><b>相公山日出</b>：日出要凌晨 4 点起（观景台 05:30–18:00），不早起就白天去。</li>
-        <li><b>西街美食</b>：啤酒鱼、田螺酿、桂林米粉，避开主街宰客店，走周边本地人店。</li>
+        <li><b>西街美食</b>：啤酒鱼、田螺酿、桂林米粉，避开主街宰客店。</li>
       </ul>
     </div>
     <div class="card">
@@ -193,118 +192,184 @@
     </div>
   </section>
 
-  <div class="foot">数据来源：高德地图（实测路程/耗时）+ 小红书（真实攻略）· 生成于 2026-09-09 · 时间以实际车票为准</div>
+  <div class="foot">数据来源：高德地图（实时路程/耗时）+ 小红书（真实攻略）· 生成于 2026-09-09 · 时间以实际车票为准</div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+window._AMapSecurityConfig = { securityJsCode: "3a716307c2cb745c2ff196f42e1c8081" };
+</script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=ae8fec4ce74205a331f6c526069cee93&plugin=AMap.Driving"></script>
 <script>
 var P = [
   {id:1,name:"兴坪希尔顿花园",lng:110.533487,lat:24.917910,day:1,type:"住宿",ticket:"住宿",note:"D1/D2 大本营，距阳朔站约10分钟"},
   {id:2,name:"兴坪古镇",lng:110.530606,lat:24.916611,day:1,type:"古镇",ticket:"免费",note:"老街+码头，午餐啤酒鱼/漓江鱼"},
   {id:3,name:"20元背景图",lng:110.529747,lat:24.916167,day:1,type:"打卡",ticket:"免费",note:"兴坪码头/朝板山机位，步行4分钟"},
-  {id:4,name:"相公山/千里江山",lng:110.483707,lat:24.923009,day:1,type:"观景",ticket:"¥60",note:"漓江第一湾全景；轮渡+观光车约25分钟（自驾绕行75分钟）"},
+  {id:4,name:"相公山/千里江山",lng:110.483707,lat:24.923009,day:1,type:"观景",ticket:"¥60",note:"漓江第一湾全景；轮渡+观光车约25分钟"},
   {id:5,name:"遇龙河水厄底码头",lng:110.471290,lat:24.742536,day:2,type:"竹筏",ticket:"¥198起",note:"「水厄底—万景」段，提前公众号买票"},
-  {id:6,name:"十里画廊",lng:110.476517,lat:24.749369,day:2,type:"骑行",ticket:"免费",note:"骑行/电瓶车，网红秋千在这片，距水厄底仅823m"},
+  {id:6,name:"十里画廊",lng:110.476517,lat:24.749369,day:2,type:"骑行",ticket:"免费",note:"骑行/电瓶车，网红秋千，距水厄底仅823m"},
   {id:7,name:"富里桥",lng:110.388036,lat:24.826747,day:2,type:"古桥",ticket:"免费",note:"明代古桥，拍照出片"},
   {id:8,name:"阳朔西街",lng:110.496481,lat:24.776954,day:2,type:"美食",ticket:"免费",note:"必吃榜餐厅+夜景"}
 ];
-// 高德驾车耗时矩阵（分钟），行=起点，列=终点，索引 0..7 对应点 1..8
+// 高德驾车耗时矩阵（分钟），行=起点列=终点，索引0..7对应点1..8（实时接口不可用时兜底）
 var TMIN = [
-  [1,3,3,74,45,41,51,41],
-  [2,0,2,75,46,42,52,42],
-  [2,2,0,75,46,43,52,42],
-  [78,78,78,0,58,57,40,49],
-  [47,48,48,58,0,5,34,27],
-  [43,44,44,56,4,0,32,23],
-  [52,53,53,39,34,31,0,24],
-  [42,43,43,46,25,21,23,0]
+  [1,3,3,74,45,41,51,41],[2,0,2,75,46,42,52,42],[2,2,0,75,46,43,52,42],
+  [78,78,78,0,58,57,40,49],[47,48,48,58,0,5,34,27],[43,44,44,56,4,0,32,23],
+  [52,53,53,39,34,31,0,24],[42,43,43,46,25,21,23,0]
 ];
 var KM = [
-  [0.1,0.4,0.6,52.7,32.5,31.7,39.5,27.8],
-  [0.4,0,0.5,52.8,32.8,31.9,39.7,28.0],
-  [0.6,0.5,0,53.1,32.9,32.1,39.8,28.2],
-  [52.6,52.8,53.0,0,32.1,32.0,21.9,27.1],
-  [32.5,32.8,32.9,32.1,0,0.8,15.1,9.5],
-  [31.7,31.9,32.1,32.0,0.8,0,15.0,8.7],
-  [39.4,39.7,39.8,21.9,15.1,15.0,0,13.9],
-  [27.8,28.0,28.2,27.1,9.5,8.7,13.9,0]
+  [0.1,0.4,0.6,52.7,32.5,31.7,39.5,27.8],[0.4,0,0.5,52.8,32.8,31.9,39.7,28.0],
+  [0.6,0.5,0,53.1,32.9,32.1,39.8,28.2],[52.6,52.8,53.0,0,32.1,32.0,21.9,27.1],
+  [32.5,32.8,32.9,32.1,0,0.8,15.1,9.5],[31.7,31.9,32.1,32.0,0.8,0,15.0,8.7],
+  [39.4,39.7,39.8,21.9,15.1,15.0,0,13.9],[27.8,28.0,28.2,27.1,9.5,8.7,13.9,0]
 ];
-// 行程相邻段标签（含轮渡特例）
 var SEGS = [
-  {a:1,b:2,label:"3min"},
-  {a:2,b:3,label:"步行4min"},
-  {a:3,b:4,label:"轮渡+观光车~25min"},
-  {a:1,b:5,label:"46min 跨区",dash:true},
-  {a:5,b:6,label:"4min"},
-  {a:6,b:7,label:"32min"},
-  {a:7,b:8,label:"24min"}
+  {a:1,b:2,label:"3min"},{a:2,b:3,label:"步行4min"},{a:3,b:4,label:"轮渡+观光车~25min"},
+  {a:1,b:5,label:"46min 跨区",dash:true},{a:5,b:6,label:"4min"},{a:6,b:7,label:"32min"},{a:7,b:8,label:"24min"}
 ];
 
-var map = null;
-var layers = {d1:L.layerGroup(), d2:L.layerGroup()};
-function initMap(){
-  if(typeof L === "undefined"){ document.getElementById("map").innerHTML = '<p class="muted" style="padding:20px">地图库加载失败，请检查网络（需访问 jsdelivr / OpenStreetMap）。</p>'; return; }
-  map = L.map("map",{scrollWheelZoom:true}).setView([24.83,110.48],11);
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:'© OpenStreetMap'} ).addTo(map);
+var map=null, markers={}, overlaysD1=[], overlaysD2=[], driving=null;
+var selOrigin=null, selDest=null, queryLine=null, highlightA=null;
 
-  var byId={};
+function pxy(p){ return [p.lng, p.lat]; }
+
+function numHtml(p, sel){
+  return '<div class="num'+(p.day===2?' d2':'')+(sel?' sel':'')+'">'+p.id+'</div>';
+}
+
+function init(){
+  if(typeof AMap === "undefined"){ document.getElementById("map").innerHTML='<p class="muted" style="padding:20px">高德地图加载失败，请检查网络。</p>'; return; }
+  map = new AMap.Map("map", {zoom:11, center:[110.48,24.83], viewMode:"2D"});
+
+  // 点位 marker
   P.forEach(function(p){
-    byId[p.id]=p;
-    var icon=L.divIcon({className:"",html:'<div class="num'+(p.day===2?' d2':'')+'">'+p.id+'</div>',iconSize:[26,26],iconAnchor:[13,13]});
-    var m=L.marker([p.lat,p.lng],{icon:icon});
-    m.bindPopup('<b>'+p.id+'. '+p.name+'</b><br>类型：'+p.type+' ｜ 门票：'+p.ticket+'<br><span style="color:#888">'+p.note+'</span>');
-    (p.day===1?layers.d1:layers.d2).addLayer(m);
+    var m = new AMap.Marker({ position: pxy(p), content: numHtml(p,false), anchor:"center", zIndex:100 });
+    m.on("click", function(){ onMarkerClick(p); });
+    m.setMap(map);
+    markers[p.id]=m;
+    (p.day===1?overlaysD1:overlaysD2).push(m);
   });
 
-  // 行程轨迹（连续段）
+  // 行程轨迹
   [[1,2],[2,3],[3,4]].forEach(function(s){
-    var a=byId[s[0]],b=byId[s[1]];
-    layers.d1.addLayer(L.polyline([[a.lat,a.lng],[b.lat,b.lng]],{color:"#667eea",weight:4,opacity:.9}));
+    var a=markers[s[0]].getPosition(), b=markers[s[1]].getPosition();
+    var pl=new AMap.Polyline({path:[a,b],strokeColor:"#667eea",strokeWeight:4,strokeOpacity:0.9});
+    pl.setMap(map); overlaysD1.push(pl);
   });
   [[1,5],[5,6],[6,7],[7,8]].forEach(function(s){
-    var a=byId[s[0]],b=byId[s[1]];
-    layers.d2.addLayer(L.polyline([[a.lat,a.lng],[b.lat,b.lng]],{color:"#e0559a",weight:4,opacity:.9,dashArray:(s[0]===1?"8 6":null)}));
+    var a=markers[s[0]].getPosition(), b=markers[s[1]].getPosition();
+    var pl=new AMap.Polyline({path:[a,b],strokeColor:"#e0559a",strokeWeight:4,strokeOpacity:0.9,strokeStyle:(s[0]===1?"dashed":"solid")});
+    pl.setMap(map); overlaysD2.push(pl);
   });
 
   // 段时间标签
   SEGS.forEach(function(s){
-    var a=byId[s.a],b=byId[s.b];
-    if(!a||!b) return;
-    var mid=[(a.lat+b.lat)/2,(a.lng+b.lng)/2];
-    var icon=L.divIcon({className:"",html:'<div class="seglabel">'+s.label+'</div>',iconSize:null});
-    var g=(s.a<=4&&s.b<=4)?layers.d1:layers.d2;
-    g.addLayer(L.marker(mid,{icon:icon,interactive:false}));
+    var a=markers[s.a].getPosition(), b=markers[s.b].getPosition();
+    var mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+    var t=new AMap.Text({text:s.label, position:mid, anchor:"center",
+      style:{"background":"#fff","color":"#333","font-size":"11px","padding":"2px 8px","border-radius":"10px","border":"1px solid #e5e5e5","box-shadow":"0 1px 3px rgba(0,0,0,.3)","white-space":"nowrap"}});
+    t.setMap(map);
+    (s.a<=4&&s.b<=4?overlaysD1:overlaysD2).push(t);
   });
 
-  layers.d1.addTo(map); layers.d2.addTo(map);
-  var g=L.featureGroup([layers.d1,layers.d2]);
-  map.fitBounds(g.getBounds().pad(0.12));
+  map.setFitView(overlaysD1.concat(overlaysD2));
 
-  // 下拉
-  var fromSel=document.getElementById("fromSel"), toSel=document.getElementById("toSel");
-  var opts=P.map(function(p){return '<option value="'+(p.id-1)+'">'+p.id+'. '+p.name+'</option>';}).join("");
-  fromSel.innerHTML=opts; toSel.innerHTML=opts; toSel.selectedIndex=1;
-  document.getElementById("goBtn").onclick=function(){
-    var i=+fromSel.value, j=+toSel.value;
-    var min=TMIN[i][j], km=KM[i][j];
-    var txt= i===j ? "同一点" : ("约 <b>"+min+" 分钟</b> ｜ "+km+" 公里（驾车）");
-    document.getElementById("qResult").innerHTML = P[i].name+" → "+P[j].name+"："+txt;
-  };
+  // 实时驾车
+  AMap.plugin("AMap.Driving", function(){
+    driving = new AMap.Driving({ policy: AMap.DrivingPolicy.LEAST_TIME, hideMarkers:true });
+  });
+
   document.getElementById("bAll").onclick=function(){switchDay("all");};
   document.getElementById("bD1").onclick=function(){switchDay("d1");};
   document.getElementById("bD2").onclick=function(){switchDay("d2");};
+  document.getElementById("clearBtn").onclick=function(){resetSel();};
 }
+
+function onMarkerClick(p){
+  // 详情
+  var info = '<b>'+p.id+'. '+p.name+'</b><br>类型：'+p.type+' ｜ 门票：'+p.ticket+'<br><span style="color:#888">'+p.note+'</span>';
+  var iw = new AMap.InfoWindow({content:'<div class="amap-info-content">'+info+'</div>',offset:new AMap.Pixel(0,-32)});
+  iw.open(map, pxy(p));
+
+  if(!selOrigin){ setOrigin(p); }
+  else if(!selDest){ setDest(p); }
+  else { resetSel(); setOrigin(p); }
+}
+
+function setOrigin(p){
+  selOrigin=p; selDest=null;
+  markers[p.id].setContent(numHtml(p,true));
+  document.getElementById("qStatus").innerHTML='起点已选：<b>'+p.name+'</b>，请再点击<b>终点</b>';
+  document.getElementById("qResult").innerHTML='';
+  if(highlightA){highlightA.setMap(null);highlightA=null;}
+  highlightA=new AMap.Circle({center:pxy(p),radius:500,strokeColor:"#ffb703",strokeWeight:3,fillColor:"#ffb703",fillOpacity:0.25});
+  highlightA.setMap(map);
+}
+
+function setDest(p){
+  selDest=p;
+  if(selOrigin.id===p.id){ resetSel(); return; }
+  markers[p.id].setContent(numHtml(p,true));
+  document.getElementById("qStatus").innerHTML='起点 <b>'+selOrigin.name+'</b> → 终点 <b>'+p.name+'</b>';
+  doQuery(selOrigin, p);
+}
+
+function doQuery(a,b){
+  var i=a.id-1, j=b.id-1;
+  if(driving){
+    driving.search(pxy(a), pxy(b), function(status,result){
+      if(status==="complete" && result.routes && result.routes.length){
+        var r=result.routes[0];
+        show(i,j,Math.round(r.time/60),(r.distance/1000).toFixed(1),"实时");
+        drawRoute(result);
+      } else { fallback(i,j); }
+    });
+  } else { fallback(i,j); }
+}
+
+function fallback(i,j){
+  show(i,j,TMIN[i][j],KM[i][j],"估算");
+}
+
+function show(i,j,min,km,tag){
+  document.getElementById("qResult").innerHTML = P[i].name+" → "+P[j].name+"：约 <b>"+min+" 分钟</b> ｜ "+km+" 公里 <small>（"+tag+"驾车）</small>";
+}
+
+function drawRoute(result){
+  var path=[];
+  try{
+    result.routes[0].steps.forEach(function(st){ (st.path||[]).forEach(function(pt){path.push(pt);}); });
+  }catch(e){}
+  if(queryLine){queryLine.setMap(null);}
+  if(path.length<2){ path=[pxy(selOrigin),pxy(selDest)]; }
+  queryLine=new AMap.Polyline({path:path,strokeColor:"#ff4d4f",strokeWeight:5,strokeOpacity:0.85,strokeStyle:"solid",zIndex:50});
+  queryLine.setMap(map);
+  map.setFitView([pxy(selOrigin),pxy(selDest),path]);
+}
+
+function resetSel(){
+  selOrigin=null; selDest=null;
+  P.forEach(function(p){ markers[p.id].setContent(numHtml(p,false)); });
+  if(queryLine){queryLine.setMap(null);queryLine=null;}
+  if(highlightA){highlightA.setMap(null);highlightA=null;}
+  document.getElementById("qStatus").innerHTML='👆 点击地图点位：先选<b>起点</b>，再点<b>终点</b>自动算耗时';
+  document.getElementById("qResult").innerHTML='';
+}
+
 function switchDay(d){
-  map.removeLayer(layers.d1); map.removeLayer(layers.d2);
-  if(d==="all"){ layers.d1.addTo(map); layers.d2.addTo(map); }
-  if(d==="d1"){ layers.d1.addTo(map); }
-  if(d==="d2"){ layers.d2.addTo(map); }
-  var g=(d==="all")?L.featureGroup([layers.d1,layers.d2]):(d==="d1"?layers.d1:layers.d2);
-  map.fitBounds(g.getBounds().pad(0.12));
+  var all=overlaysD1.concat(overlaysD2);
+  all.forEach(function(o){o.hide();});
+  if(d==="all"){overlaysD1.forEach(function(o){o.show();});overlaysD2.forEach(function(o){o.show();});}
+  if(d==="d1"){overlaysD1.forEach(function(o){o.show();});}
+  if(d==="d2"){overlaysD2.forEach(function(o){o.show();});}
+  var vis=(d==="all")?all:(d==="d1"?overlaysD1:overlaysD2);
+  map.setFitView(vis);
   ["bAll","bD1","bD2"].forEach(function(id){document.getElementById(id).classList.remove("active");});
   document.getElementById(d==="all"?"bAll":(d==="d1"?"bD1":"bD2")).classList.add("active");
+  if(queryLine){queryLine.setMap(null);queryLine=null;}
+  if(highlightA){highlightA.setMap(null);highlightA=null;}
+  resetSel();
 }
-initMap();
+init();
 </script>
 </body>
 </html>
