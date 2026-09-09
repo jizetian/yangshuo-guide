@@ -227,15 +227,15 @@ footer a{color:var(--ink2)}
         <input type="date" id="inDate">
       </label>
       <label>D1 抵达阳朔站
-        <input type="time" id="inArr" value="11:32">
+        <input type="time" id="inArr" value="12:20">
       </label>
       <label>D2 返程发车
-        <input type="time" id="inDep" value="19:16">
+        <input type="time" id="inDep" value="20:15">
       </label>
     </div>
     <div class="hint">
-      默认值取自小红书上一条同线路实测帖（广州南 08:40→11:32，返程 19:16→21:52）。
-      注意有车次是 <b>09:02 发车、1小时58分</b> 到，比 2小时52分那趟快将近一小时，值得优先抢。
+      已按你说的填好：<b>周六 12 点多到、周日晚 8 点多走</b>。拿到票之后把准确时刻改一下，
+      两天的时间轴和「最晚几点必须离开西街」会跟着重算。
     </div>
   </div>
   <div id="nowbox" class="idle">
@@ -358,10 +358,13 @@ footer a{color:var(--ink2)}
     <div class="tl soft" data-t="230" data-dur="40">
       <div class="clock" data-clock></div><div class="dot"></div>
       <div class="act">骑回古镇，还车 / 歇脚</div>
-      <div class="det">古镇不大，半小时逛完。找家临江的店坐会儿，等下午的日头软下来。</div>
+      <div class="det">
+        古镇不大，半小时逛完。找家临江的店坐会儿，等下午的日头软下来。
+        <em>顺便回 20 元背景图补拍</em>——这个点太阳低了，比中午顺光得多。
+      </div>
     </div>
 
-    <div class="tl" data-t="290" data-dur="10">
+    <div class="tl" data-t="SUNSET-100" data-dur="10">
       <div class="clock" data-clock></div><div class="dot"></div>
       <div class="act">兴坪码头集合，拼车过江看日落</div>
       <div class="det">
@@ -372,10 +375,10 @@ footer a{color:var(--ink2)}
       </div>
     </div>
 
-    <div class="tl" data-t="300" data-dur="35">
+    <div class="tl" data-t="SUNSET-50" data-dur="30">
       <div class="clock" data-clock></div><div class="dot"></div>
       <div class="act">到千里江山图观景台</div>
-      <div class="det">大型水墨画机位，山水层层叠叠那张就是这里。车程约 35–40 分钟。</div>
+      <div class="det">大型水墨画机位，山水层层叠叠那张就是这里。车程约 35–40 分钟，<em>提前到，占机位</em>。</div>
       <div class="acts"><a class="act-btn" href="https://uri.amap.com/marker?position=110.407059,24.912430&name=千里江山图日落观景台&src=ys&coordinate=gaode&callnative=1" target="_blank">看位置</a></div>
     </div>
 
@@ -385,7 +388,7 @@ footer a{color:var(--ink2)}
       <div class="det" id="sunsetNote">9 月中旬阳朔日落约 18:45（按你填的日期算）。看完整个落山再走，车队会等。</div>
     </div>
 
-    <div class="tl soft" data-t="405" data-dur="45">
+    <div class="tl soft" data-t="SUNSET+25" data-dur="45">
       <div class="clock" data-clock></div><div class="dot"></div>
       <div class="act">回兴坪，晚饭</div>
       <div class="det">天黑后返程，约 40 分钟回镇上。</div>
@@ -516,7 +519,9 @@ footer a{color:var(--ink2)}
         点单时让服务员<em>当面称鱼、报出总价再下锅</em>，说清「就要两斤左右」，别说「越大越好」。
         这是被宰的唯一入口，堵上就没事了。<br>
         主街是保底，巷子里的本地店同样的菜便宜两三成。别信路边拉客推荐的店。
-        竹筒饭 ¥30 一份不值，「野生漓江鱼」是话术——本地人在集市都买不到，全是养殖的，不要为这个加价。
+        竹筒饭 ¥30 一份不值，「野生漓江鱼」是话术——本地人在集市都买不到，全是养殖的，不要为这个加价。<br>
+        <em>你这趟运气好</em>：8 点多的车让你能在西街待到天黑，灯亮起来的西街比白天好看得多，
+        白天来的人反而只看到一条普通商业街。
       </div>
     </div>
 
@@ -560,6 +565,7 @@ footer a{color:var(--ink2)}
     <button class="mbtn on" data-day="all">全部</button>
     <button class="mbtn" data-day="1">D1 兴坪</button>
     <button class="mbtn" data-day="2">D2 县城</button>
+    <button class="mbtn" id="zoomTown">🔍 兴坪镇内</button>
     <button class="mbtn" id="locBtn">📍 我在哪</button>
   </div>
   <div id="map"></div>
@@ -760,9 +766,9 @@ window._AMapSecurityConfig = { securityJsCode: "3a716307c2cb745c2ff196f42e1c8081
 
 /* ══════════ 数据 ══════════ */
 var PTS = [
-  {id:1, day:1, name:"希尔顿花园酒店",   lng:110.533487, lat:24.917910, info:"兴坪镇新榕街63号", tel:"0773-8758666"},
-  {id:2, day:1, name:"兴坪旅游客运站",   lng:110.531854, lat:24.917977, info:"去县城 ¥15 · 20分钟一班 · 末班17:30", tel:"0773-8702225"},
-  {id:3, day:1, name:"20元背景图",       lng:110.529747, lat:24.916167, info:"漓江景区售票厅侧 · 免费 · 下午逆光"},
+  {id:1, day:1, name:"希尔顿花园酒店",   lng:110.533487, lat:24.917910, info:"兴坪镇新榕街63号", tel:"0773-8758666", nudge:[13,-11]},
+  {id:2, day:1, name:"兴坪旅游客运站",   lng:110.531854, lat:24.917977, info:"去县城 ¥15 · 20分钟一班 · 末班17:30", tel:"0773-8702225", nudge:[0,-24]},
+  {id:3, day:1, name:"20元背景图",       lng:110.529747, lat:24.916167, info:"漓江景区售票厅侧 · 免费 · 下午逆光", nudge:[-13,11]},
   {id:4, day:1, name:"朝板山",           lng:110.513855, lat:24.923095, info:"沿江骑行线的中段 · 导航输这里"},
   {id:5, day:1, name:"冷水渡口",         lng:110.491713, lat:24.933630, info:"骑行终点 · 轮渡 ¥5 过江"},
   {id:6, day:1, name:"千里江山图观景台", lng:110.407059, lat:24.912430, info:"日落机位 · 兴坪码头拼车 ¥70/人往返"},
@@ -770,15 +776,15 @@ var PTS = [
   {id:8, day:1, name:"阳朔站(高铁)",     lng:110.568081, lat:24.960139, info:"酒店 7.5km / 11分钟"},
   {id:9, day:2, name:"阳朔汽车站",       lng:110.476927, lat:24.778427, info:"千古情大道2号", tel:"0773-8881002"},
   {id:10,day:2, name:"水厄底码头",       lng:110.471387, lat:24.742248, info:"竹筏起点 ¥200/双人筏", tel:"15807836003"},
-  {id:11,day:2, name:"工农桥综合码头",   lng:110.490510, lat:24.734295, info:"竹筏上岸 · 十里画廊南端"},
-  {id:12,day:2, name:"大榕树景区",       lng:110.486134, lat:24.731619, info:"距上岸点 300 米"},
+  {id:11,day:2, name:"工农桥综合码头",   lng:110.490510, lat:24.734295, info:"竹筏上岸 · 十里画廊南端", nudge:[11,-9]},
+  {id:12,day:2, name:"大榕树景区",       lng:110.486134, lat:24.731619, info:"距上岸点 300 米", nudge:[-11,9]},
   {id:13,day:2, name:"阳朔西街",         lng:110.495811, lat:24.775820, info:"啤酒鱼按斤卖 ¥88-168/斤，当面称"}
 ];
 
 var PACK = ["身份证×2","高铁票","充电宝","防晒霜","帽子","墨镜","雨衣/伞",
             "运动鞋","可湿的鞋","换洗衣物","常用药","现金(租车押金)","20元纸币","干毛巾"];
 
-var LS = "ys_guide_v2";
+var LS = "ys_guide_v3";
 var $ = function(s){ return document.querySelector(s); };
 var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
 var pad = function(n){ return (n<10?"0":"")+n; };
@@ -805,7 +811,7 @@ function sunset(dateStr){
 }
 
 /* ══════════ 状态 ══════════ */
-var S = { date:"", arr:"11:32", dep:"19:16", packed:{} };
+var S = { date:"2026-09-12", arr:"12:20", dep:"20:15", packed:{} };
 try { var raw=localStorage.getItem(LS); if(raw) S=Object.assign(S,JSON.parse(raw)); } catch(e){}
 function save(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
 
@@ -834,10 +840,11 @@ function render(){
   var arr = toMin(S.arr);
   var ss  = sunset(S.date);
 
-  // D1：相对到站偏移
+  // D1：相对到站偏移，或相对日落锚定（SUNSET±N）
   $$("#d1 .tl").forEach(function(el){
     var spec = el.getAttribute("data-t"), m;
     if (spec === "-SUNSET")            m = ss;
+    else if (/^SUNSET([+-]\d+)$/.test(spec)) m = ss + parseInt(RegExp.$1,10);
     else if (spec.indexOf("ABS-")===0) m = toMin(spec.slice(4));
     else                               m = arr + parseInt(spec,10);
     el.setAttribute("data-abs", m);
@@ -904,7 +911,8 @@ function tickNow(){
     if (isNaN(days)) { big.textContent="填一下出发日期"; sub.textContent=""; return; }
     if (days>0){
       big.textContent = "距出发还有 "+days+" 天";
-      sub.innerHTML = "出发前要做的：抢 09:02 那趟车次（快一小时）· 存一个拼车师傅微信 · 备 ¥200 现金做电驴押金";
+      sub.innerHTML = "出发前要做的：存一个拼车师傅微信（阳朔站接站）· 备 ¥200 现金做电驴押金 · "+
+                      "周六晚 20:00 记得抢竹筏票";
     } else {
       big.textContent = "行程已结束";
       sub.textContent = "改上面的日期可以重新启用实时提示。";
@@ -1019,8 +1027,10 @@ function initMap(){
   }
   map = new AMap.Map("map",{ zoom:11, center:[110.49,24.85], viewMode:"2D" });
   PTS.forEach(function(p){
+    // 兴坪镇内 1/2/3 三点相距仅几百米，低缩放时会叠在一起：给个固定的像素偏移错开
+    var off = p.nudge ? new AMap.Pixel(p.nudge[0], p.nudge[1]) : new AMap.Pixel(0,0);
     var m = new AMap.Marker({
-      position:[p.lng,p.lat], anchor:"center", zIndex:100,
+      position:[p.lng,p.lat], anchor:"center", zIndex:100, offset:off,
       content:'<div class="pin'+(p.day===2?' d2':'')+'">'+p.id+'</div>'
     });
     m.on("click",function(){
@@ -1058,6 +1068,13 @@ $$(".mbtn[data-day]").forEach(function(b){
     });
     if (map) map.setFitView(d==="all" ? null : layer[d]);
   });
+});
+$("#zoomTown").addEventListener("click",function(){
+  if (!map) return;
+  // 酒店/客运站/20元背景图 挤在几百米内，全局视野下看不清，单独拉近
+  map.setZoomAndCenter(16, [110.5316, 24.9172]);
+  $("#mapOut").innerHTML = "<b>兴坪镇内</b> — 酒店(1)、客运站(2)、20元背景图(3) 三点相距都在 400 米内，"+
+                           "步行可达。D1 全天不用打车就是因为这个。";
 });
 $("#locBtn").addEventListener("click",function(){
   var out=$("#mapOut");
