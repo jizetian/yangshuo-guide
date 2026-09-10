@@ -179,7 +179,11 @@ async function handleEdit(request, env, origin) {
   const originalHtml = html;
 
   // 2. 让 Claude 提出改动
-  const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
+  // ANTHROPIC_BASE_URL 可选：走中转服务时设置，留空则直连官方
+  const client = new Anthropic({
+    apiKey: env.ANTHROPIC_API_KEY,
+    ...(env.ANTHROPIC_BASE_URL ? { baseURL: env.ANTHROPIC_BASE_URL } : {}),
+  });
   const applied = [];
   let messages = [
     {
@@ -292,14 +296,17 @@ async function handleEdit(request, env, origin) {
   history.entries = history.entries.slice(0, 100);
 
   // 4. 一次提交推上去，带标记
-  const firstLine = (summary.split("\n")[0] || instr).slice(0, 60);
+  //    标题用用户原话（短且稳定），summary 可能很长且带换行，放正文
+  const title = instr.replace(/\s+/g, " ").slice(0, 50);
   const sha = await commitFiles(
     env,
     [
       { path: PAGE_FILE, content: html },
       { path: HISTORY_FILE, content: JSON.stringify(history, null, 2) + "\n" },
     ],
-    `${COMMIT_PREFIX} ${firstLine}\n\n用户要求：${instr}\n改动 ${applied.length} 处：\n` +
+    `${COMMIT_PREFIX} ${title}\n\n` +
+      (summary ? `${summary}\n\n` : "") +
+      `改动 ${applied.length} 处：\n` +
       applied.map((a) => `- ${a.reason}`).join("\n") +
       `\n\n由行程助手自动提交。`
   );
@@ -343,6 +350,7 @@ export default {
           hasKey: !!env.ANTHROPIC_API_KEY,
           hasToken: !!env.GITHUB_TOKEN,
           hasPass: !!env.EDIT_PASSPHRASE,
+          baseUrl: env.ANTHROPIC_BASE_URL || "官方直连",
         },
         200,
         origin
