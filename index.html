@@ -1295,7 +1295,7 @@ var AGENT_API = "https://yangshuo-agent.jizetian.workers.dev";
   });
 
   async function poll(base, jobId){
-    var t0=Date.now(), lastStep="";
+    var t0=Date.now(), lastStep="", stuckSince=Date.now();
     for(var i=0;i<120;i++){                     // 最多等 6 分钟
       await new Promise(function(r){ setTimeout(r, i<5?1500:3000); });
       var sec=Math.round((Date.now()-t0)/1000);
@@ -1304,8 +1304,9 @@ var AGENT_API = "https://yangshuo-agent.jizetian.workers.dev";
         var jd = await jr.json();
         if(!jd.ok){ status.textContent="任务丢了（"+sec+"s）"; return; }
         var j=jd.job;
-        if(j.step&&j.step!==lastStep) lastStep=j.step;
-        status.textContent = lastStep+"…（"+sec+"s）";
+        if(j.step&&j.step!==lastStep){ lastStep=j.step; stuckSince=Date.now(); }
+        var stuck=Math.round((Date.now()-stuckSince)/1000);
+        status.textContent = lastStep+"…（"+sec+"s"+(stuck>30?"，卡了 "+stuck+"s":"")+"）";
 
         if(j.status==="done"){
           status.textContent="";
@@ -1323,6 +1324,15 @@ var AGENT_API = "https://yangshuo-agent.jizetian.workers.dev";
           status.textContent="";
           show(false, j.status==="nochange"?"没有改动":"没改成",
                "<div>"+esc(j.error||"")+"</div>");
+          return;
+        }
+        // 同一步骤卡太久，多半是上游模型服务挂住了，别让用户干等
+        if(stuck>150){
+          status.textContent="";
+          show(false,"上游卡住了",
+            "<div>任务停在「"+esc(lastStep)+"」"+stuck+" 秒没动静，多半是模型服务这会儿不稳。</div>"+
+            "<div style='margin-top:6px;color:var(--ink3);font-size:12.5px'>"+
+            "后台还会再试一次并自动放弃。过几分钟重来，或看下面的修改历史确认有没有改成。</div>");
           return;
         }
       }catch(e){ /* 网络抖动，继续轮询 */ }

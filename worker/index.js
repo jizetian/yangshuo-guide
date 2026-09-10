@@ -24,6 +24,8 @@ const COMMIT_PREFIX = "[agent]";
 const MAX_INSTRUCTION = 500;
 const MAX_EDITS = 8;
 const MAX_READS = 6; // 一次会话最多读几块，防止读满全页
+const CALL_TIMEOUT_MS = 75000; // 单次模型调用上限：中转服务会无响应地挂住
+const JOB_DEADLINE_MS = 240000; // 整个任务上限，超了标记失败而不是永远 running
 
 /**
  * 把整页切成命名片段。改动通常只碰一两块，
@@ -234,6 +236,7 @@ async function setJob(env, id, patch) {
  */
 async function runEdit(env, jobId, instr) {
   const step = (s) => setJob(env, jobId, { step: s });
+  const startedAt = Date.now();
   try {
     await step("读取当前页面");
     const pageMeta = await ghJson(env, `/contents/${PAGE_FILE}?ref=${BRANCH}`);
@@ -261,18 +264,54 @@ async function runEdit(env, jobId, instr) {
     let summary = "";
     let editSummary = "";
     for (let turn = 0; turn < 8; turn++) {
+      if (Date.now() - startedAt > JOB_DEADLINE_MS) {
+        return setJob(env, jobId, {
+          status: "error",
+          error: "超时了。上游模型服务这会儿响应很慢，过几分钟再试；如果一直这样，多半是中转服务的问题。",
+          usage,
+          read: readNames,
+        });
+      }
       await step(turn === 0 ? "助手在想改哪里" : `第 ${turn + 1} 轮`);
-      const resp = await client.messages.create({
-        model: "claude-opus-5",
-        max_tokens: 8000,
-        thinking: { type: "adaptive" },
-        // 改文案不需要 high；中转服务延迟随请求增大而暴涨，省一轮就是省几十秒
-        output_config: { effort: "medium" },
-        // 系统提示是稳定前缀，缓存它；页面内容按需通过工具进来，不进前缀
-        system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
-        tools: [READ_TOOL, EDIT_TOOL],
-        messages,
-      });
+
+      // 中转服务偶尔会挂住不返回，必须自己掐表；掐断后重试一次
+      let resp = null;
+      for (let attempt = 0; attempt < 2 && !resp; attempt++) {
+        if (attempt) await step(`第 ${turn + 1} 轮 · 上游没响应，重试中`);
+        try {
+          resp = await client.messages.create(
+            {
+              model: "claude-opus-5",
+              max_tokens: 8000,
+              thinking: { type: "adaptive" },
+              // 改文案不需要 high；上游延迟随请求增大而暴涨，省一轮就是省几十秒
+              output_config: { effort: "medium" },
+              // 系统提示是稳定前缀，缓存它；页面内容按需通过工具进来，不进前缀
+              system: [
+                { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
+              ],
+              tools: [READ_TOOL, EDIT_TOOL],
+              messages,
+            },
+            // SDK 的 timeout 选项在 Workers 运行时不可靠，用 AbortController 自己掐
+            {
+              signal: AbortSignal.timeout(CALL_TIMEOUT_MS),
+              timeout: CALL_TIMEOUT_MS,
+              maxRetries: 0,
+            }
+          );
+        } catch (e) {
+          const msg = String(e && e.message ? e.message : e);
+          if (attempt === 1) {
+            return setJob(env, jobId, {
+              status: "error",
+              error: `上游模型服务没响应（${msg.slice(0, 100)}）。已经重试过一次。`,
+              usage,
+              read: readNames,
+            });
+          }
+        }
+      }
 
       const u = resp.usage || {};
       usage.input += u.input_tokens || 0;
