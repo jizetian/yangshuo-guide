@@ -184,6 +184,42 @@ footer{margin-top:38px;padding:18px 0 10px;border-top:1px solid var(--line);
   font-size:12px;color:var(--ink3);line-height:1.8}
 footer a{color:var(--ink2)}
 
+/* ── 改行程 agent ── */
+.ag-lbl{display:block;font-size:12px;color:var(--ink2);font-weight:600}
+.ag-lbl input,.ag-lbl textarea{display:block;width:100%;margin-top:5px;padding:9px 10px;
+  font-size:15px;font-family:inherit;border:1px solid var(--line);border-radius:6px;
+  background:#fff;color:var(--ink);line-height:1.6;resize:vertical}
+.ag-lbl input:focus,.ag-lbl textarea:focus{outline:none;border-color:var(--jade);
+  box-shadow:0 0 0 3px rgba(47,107,87,.09)}
+.ag-hint{font-size:12px;color:var(--ink3);margin-top:6px;line-height:1.6}
+.ag-hint b{color:var(--clay)}
+.ag-row{display:flex;align-items:center;gap:11px;margin-top:12px;flex-wrap:wrap}
+.btn-primary{font-family:inherit;font-size:14px;font-weight:700;color:#fff;background:var(--jade);
+  border:1px solid var(--jade);border-radius:7px;padding:9px 26px;cursor:pointer}
+.btn-primary:disabled{opacity:.5;cursor:default}
+.btn-primary:active:not(:disabled){background:#25543f}
+.ag-status{font-size:13px;color:var(--ink2)}
+.ag-result{margin-top:13px;border-radius:7px;padding:12px 14px;font-size:13.5px;line-height:1.7;
+  border:1px solid var(--ok-line);background:var(--ok-bg)}
+.ag-result.bad{border-color:var(--stop-line);background:var(--stop-bg)}
+.ag-result .rh{font-weight:700;margin-bottom:4px;display:block}
+.ag-result ul{margin:6px 0 0;padding-left:19px;font-size:13px}
+.ag-result code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#fff;
+  border:1px solid var(--line2);border-radius:3px;padding:1px 5px}
+.ag-eg{margin-top:14px;font-size:12.5px;color:var(--ink3)}
+.ag-chip{font-family:inherit;font-size:12.5px;color:var(--ink2);background:var(--paper);
+  border:1px solid var(--line);border-radius:20px;padding:4px 11px;margin:3px 3px 0 0;cursor:pointer}
+.ag-chip:active{border-color:var(--jade);color:var(--jade)}
+.ag-count{font-size:12px;color:var(--ink3);font-weight:400}
+.hist-item{border-bottom:1px solid var(--line2);padding:11px 0}
+.hist-item:last-child{border-bottom:none}
+.hist-item .ht{font-size:12px;color:var(--ink3);font-family:ui-monospace,Menlo,monospace}
+.hist-item .hq{font-size:13.5px;color:var(--ink);font-weight:600;margin-top:2px}
+.hist-item .hs{font-size:13px;color:var(--ink2);margin-top:3px}
+.hist-item .he{font-size:12.5px;color:var(--ink3);margin-top:4px;padding-left:14px}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.92em;background:var(--paper);
+  border:1px solid var(--line2);border-radius:3px;padding:1px 5px}
+
 @media(max-width:520px){
   .wrap{padding:0 13px}
   header h1{font-size:20px}
@@ -215,6 +251,7 @@ footer a{color:var(--ink2)}
   <a href="#planb">意外了</a>
   <a href="#money">花费</a>
   <a href="#offline">离线信息</a>
+  <a href="#agent">改行程</a>
 </nav>
 
 <!-- ══════════ 行程参数 ══════════ -->
@@ -780,6 +817,47 @@ footer a{color:var(--ink2)}
   <div class="chk" id="chkList"></div>
 </section>
 
+<!-- ══════════ 改行程 ══════════ -->
+<section id="agent">
+  <h2><span class="n">10</span>让助手改行程</h2>
+  <p class="lede">
+    用一句话说要改什么，助手改完直接提交，页面约 1 分钟后更新。
+    每次改动都记在下面的历史里，git 提交也带 <code>[agent]</code> 标记，跟手改的分得开。
+  </p>
+
+  <div class="card" id="agentCard">
+    <div id="agentSetup" class="ag-setup">
+      <label class="ag-lbl">口令
+        <input type="password" id="agPass" placeholder="没有口令只能看，不能改" autocomplete="current-password">
+      </label>
+      <div class="ag-hint" id="agBackendHint"></div>
+    </div>
+
+    <label class="ag-lbl" style="margin-top:12px">想改什么
+      <textarea id="agInput" rows="3" placeholder="例如：竹筏改到下午两点 / 把大榕树去掉 / 晚饭加一家备选店"></textarea>
+    </label>
+
+    <div class="ag-row">
+      <button class="btn-primary" id="agSend">改</button>
+      <span class="ag-status" id="agStatus"></span>
+    </div>
+
+    <div id="agResult" class="ag-result" hidden></div>
+
+    <div class="ag-eg">
+      试试：
+      <button class="ag-chip" data-eg="D2 的竹筏时间改到下午 2 点，后面的行程跟着顺延">竹筏改下午</button>
+      <button class="ag-chip" data-eg="把大榕树景区从 D2 行程里去掉">去掉大榕树</button>
+      <button class="ag-chip" data-eg="在打包清单里加上「泳衣」和「防水手机袋」">加打包项</button>
+    </div>
+  </div>
+
+  <details id="histBox">
+    <summary>修改历史 <span class="ag-count" id="histCount"></span></summary>
+    <div class="dbody" id="histBody">加载中…</div>
+  </details>
+</section>
+
 <footer>
   <div>
     路程与耗时：高德地图 Web 服务 API 实测（<span id="genDate">2026-09-10</span> 拉取）。
@@ -1152,6 +1230,117 @@ $("#locBtn").addEventListener("click",function(){
     });
   });
 });
+
+/* ══════════ 改行程 agent ══════════ */
+// 部署好 worker 后把地址填这里（wrangler deploy 会打印）
+var AGENT_API = "";
+
+(function(){
+  var pass=$("#agPass"), input=$("#agInput"), btn=$("#agSend"),
+      status=$("#agStatus"), result=$("#agResult"), hint=$("#agBackendHint");
+
+  // 口令记在本地，省得每次输
+  try{ pass.value = localStorage.getItem("ys_agent_pass") || ""; }catch(e){}
+  pass.addEventListener("change",function(){
+    try{ localStorage.setItem("ys_agent_pass", pass.value); }catch(e){}
+  });
+
+  if (!AGENT_API){
+    hint.innerHTML = "<b>后端还没部署</b>——按仓库里 <code>worker/README.md</code> 的步骤部署 "+
+                     "Cloudflare Worker，再把地址填到 index.html 的 <code>AGENT_API</code>。"+
+                     "在那之前这里改不了行程，其余功能不受影响。";
+    btn.disabled = true;
+    input.disabled = true;
+  }
+
+  function show(ok, title, html){
+    result.hidden=false;
+    result.className = "ag-result" + (ok?"":" bad");
+    result.innerHTML = '<span class="rh">'+title+'</span>'+(html||"");
+  }
+
+  $$(".ag-chip").forEach(function(c){
+    c.addEventListener("click",function(){ input.value=c.getAttribute("data-eg"); input.focus(); });
+  });
+
+  btn.addEventListener("click",async function(){
+    var instr=(input.value||"").trim();
+    if(!instr){ input.focus(); return; }
+    if(!pass.value){ show(false,"要先填口令",""); return; }
+
+    btn.disabled=true; result.hidden=true;
+    status.textContent="助手正在改…（十几秒）";
+    try{
+      var r = await fetch(AGENT_API.replace(/\/$/,"")+"/edit",{
+        method:"POST",
+        headers:{"content-type":"application/json"},
+        body:JSON.stringify({pass:pass.value, instruction:instr})
+      });
+      var d = await r.json();
+      if (d.ok){
+        show(true,"改好了 · "+(d.commit?"提交 "+d.commit:""),
+          "<div>"+esc(d.summary)+"</div>"+
+          (d.edits&&d.edits.length ? "<ul>"+d.edits.map(function(e){return "<li>"+esc(e)+"</li>";}).join("")+"</ul>" : "")+
+          "<div style='margin-top:7px;color:var(--ink3);font-size:12.5px'>"+esc(d.note||"")+"</div>");
+        input.value="";
+        status.textContent="";
+        setTimeout(loadHistory, 2500);
+      } else {
+        show(false, d.noChange ? "没有改动" : "没改成", "<div>"+esc(d.error||"未知错误")+"</div>");
+        status.textContent="";
+      }
+    }catch(err){
+      show(false,"连不上后端","<div>"+esc(String(err.message||err))+
+        "</div><div style='margin-top:6px;color:var(--ink3);font-size:12.5px'>"+
+        "检查 worker 是否已部署、地址是否填对。</div>");
+      status.textContent="";
+    }
+    btn.disabled=false;
+  });
+
+  function esc(s){ return String(s==null?"":s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  function ago(iso){
+    var d=new Date(iso); if(isNaN(d)) return iso;
+    var m=Math.floor((Date.now()-d)/60000);
+    if(m<1) return "刚刚";
+    if(m<60) return m+" 分钟前";
+    if(m<1440) return Math.floor(m/60)+" 小时前";
+    return (d.getMonth()+1)+"月"+d.getDate()+"日 "+pad(d.getHours())+":"+pad(d.getMinutes());
+  }
+
+  async function loadHistory(){
+    var body=$("#histBody"), cnt=$("#histCount");
+    try{
+      var r = await fetch("./history.json?t="+Date.now());
+      if(!r.ok) throw new Error(r.status);
+      var d = await r.json();
+      var list = (d.entries)||[];
+      cnt.textContent = list.length ? "（"+list.length+" 次）" : "（还没有）";
+      if(!list.length){
+        body.innerHTML = "<p style='color:var(--ink3)'>助手还没改过这份行程。"+
+                         "上面提一个要求就会出现在这里。</p>";
+        return;
+      }
+      body.innerHTML = list.slice(0,20).map(function(e){
+        return '<div class="hist-item">'+
+          '<div class="ht">'+esc(ago(e.at))+(e.commit?' · '+esc(e.commit):'')+'</div>'+
+          '<div class="hq">'+esc(e.instruction)+'</div>'+
+          '<div class="hs">'+esc(e.summary)+'</div>'+
+          ((e.edits&&e.edits.length)? '<div class="he">'+
+             e.edits.map(function(x){return "· "+esc(x);}).join("<br>")+'</div>' : '')+
+        '</div>';
+      }).join("");
+    }catch(err){
+      cnt.textContent="";
+      body.innerHTML = "<p style='color:var(--ink3)'>历史读不到（"+esc(String(err.message||err))+"）。</p>";
+    }
+  }
+
+  $("#histBox").addEventListener("toggle",function(){ if(this.open) loadHistory(); });
+  loadHistory();
+})();
 
 /* ══════════ 启动 ══════════ */
 render();

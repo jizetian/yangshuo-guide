@@ -1,0 +1,13 @@
+name = "yangshuo-agent"
+main = "index.js"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# 只允许攻略页调用，防止别人拿你的 worker 地址去刷
+ALLOWED_ORIGIN = "https://jizetian.github.io"
+
+# 以下三个是密钥，不写在这里。用 wrangler secret put 设置：
+#   wrangler secret put ANTHROPIC_API_KEY
+#   wrangler secret put GITHUB_TOKEN
+#   wrangler secret put EDIT_PASSPHRASE
