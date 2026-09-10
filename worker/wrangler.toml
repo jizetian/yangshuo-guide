@@ -7,6 +7,12 @@ compatibility_flags = ["nodejs_compat"]
 # 只允许攻略页调用，防止别人拿你的 worker 地址去刷
 ALLOWED_ORIGIN = "https://jizetian.github.io"
 
+# 任务状态。改一次要几十秒（中转服务慢），所以做成异步：
+# 提交后立刻返回 jobId，前端轮询，手机断网重连也不丢。
+[[kv_namespaces]]
+binding = "JOBS"
+id = "485326f9d1984a2e80ace6d314009b1e"
+
 # 以下三个是密钥，不写在这里。用 wrangler secret put 设置：
 #   wrangler secret put ANTHROPIC_API_KEY
 #   wrangler secret put GITHUB_TOKEN

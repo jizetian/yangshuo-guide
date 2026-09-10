@@ -1269,34 +1269,67 @@ var AGENT_API = "https://yangshuo-agent.jizetian.workers.dev";
     if(!pass.value){ show(false,"要先填口令",""); return; }
 
     btn.disabled=true; result.hidden=true;
-    status.textContent="助手正在改…（十几秒）";
+    var base=AGENT_API.replace(/\/$/,"");
+    status.textContent="提交中…";
     try{
-      var r = await fetch(AGENT_API.replace(/\/$/,"")+"/edit",{
+      // 改一次要几十秒，所以后端是异步的：这里只拿一个任务号，然后轮询
+      var r = await fetch(base+"/edit",{
         method:"POST",
         headers:{"content-type":"application/json"},
         body:JSON.stringify({pass:pass.value, instruction:instr})
       });
       var d = await r.json();
-      if (d.ok){
-        show(true,"改好了 · "+(d.commit?"提交 "+d.commit:""),
-          "<div>"+esc(d.summary)+"</div>"+
-          (d.edits&&d.edits.length ? "<ul>"+d.edits.map(function(e){return "<li>"+esc(e)+"</li>";}).join("")+"</ul>" : "")+
-          "<div style='margin-top:7px;color:var(--ink3);font-size:12.5px'>"+esc(d.note||"")+"</div>");
-        input.value="";
-        status.textContent="";
-        setTimeout(loadHistory, 2500);
-      } else {
-        show(false, d.noChange ? "没有改动" : "没改成", "<div>"+esc(d.error||"未知错误")+"</div>");
-        status.textContent="";
+      if(!d.ok||!d.jobId){
+        show(false,"没改成","<div>"+esc(d.error||"未知错误")+"</div>");
+        status.textContent=""; btn.disabled=false; return;
       }
+      input.value="";
+      await poll(base, d.jobId);
     }catch(err){
       show(false,"连不上后端","<div>"+esc(String(err.message||err))+
         "</div><div style='margin-top:6px;color:var(--ink3);font-size:12.5px'>"+
-        "检查 worker 是否已部署、地址是否填对。</div>");
+        "检查网络，或稍后重试。</div>");
       status.textContent="";
     }
     btn.disabled=false;
   });
+
+  async function poll(base, jobId){
+    var t0=Date.now(), lastStep="";
+    for(var i=0;i<120;i++){                     // 最多等 6 分钟
+      await new Promise(function(r){ setTimeout(r, i<5?1500:3000); });
+      var sec=Math.round((Date.now()-t0)/1000);
+      try{
+        var jr = await fetch(base+"/job?id="+encodeURIComponent(jobId));
+        var jd = await jr.json();
+        if(!jd.ok){ status.textContent="任务丢了（"+sec+"s）"; return; }
+        var j=jd.job;
+        if(j.step&&j.step!==lastStep) lastStep=j.step;
+        status.textContent = lastStep+"…（"+sec+"s）";
+
+        if(j.status==="done"){
+          status.textContent="";
+          show(true,"改好了 · 提交 "+esc(j.commit||""),
+            "<div>"+esc(j.summary)+"</div>"+
+            (j.edits&&j.edits.length ? "<ul>"+j.edits.map(function(e){return "<li>"+esc(e)+"</li>";}).join("")+"</ul>" : "")+
+            (j.read&&j.read.length ? "<div style='margin-top:6px;color:var(--ink3);font-size:12.5px'>只读了 "+esc(j.read.join("、"))+
+              (j.usage? "，用了 "+j.usage.input+" token":"")+"</div>" : "")+
+            "<div style='margin-top:7px;color:var(--ink3);font-size:12.5px'>"+
+            "页面约 1 分钟后更新，届时强刷即可。</div>");
+          setTimeout(loadHistory, 3000);
+          return;
+        }
+        if(j.status==="error"||j.status==="nochange"){
+          status.textContent="";
+          show(false, j.status==="nochange"?"没有改动":"没改成",
+               "<div>"+esc(j.error||"")+"</div>");
+          return;
+        }
+      }catch(e){ /* 网络抖动，继续轮询 */ }
+    }
+    status.textContent="";
+    show(false,"等太久了","<div>后台可能还在跑。等一分钟刷新页面，或看下面的修改历史确认。</div>");
+  }
 
   function esc(s){ return String(s==null?"":s)
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
@@ -1324,12 +1357,17 @@ var AGENT_API = "https://yangshuo-agent.jizetian.workers.dev";
         return;
       }
       body.innerHTML = list.slice(0,20).map(function(e){
+        var meta=[];
+        if(e.read&&e.read.length) meta.push("读了 "+e.read.join("、"));
+        if(e.usage) meta.push((e.usage.input||0)+" token"+
+          (e.usage.cacheRead? "（缓存命中 "+e.usage.cacheRead+"）":""));
         return '<div class="hist-item">'+
           '<div class="ht">'+esc(ago(e.at))+(e.commit?' · '+esc(e.commit):'')+'</div>'+
           '<div class="hq">'+esc(e.instruction)+'</div>'+
           '<div class="hs">'+esc(e.summary)+'</div>'+
           ((e.edits&&e.edits.length)? '<div class="he">'+
              e.edits.map(function(x){return "· "+esc(x);}).join("<br>")+'</div>' : '')+
+          (meta.length? '<div class="ht" style="margin-top:4px">'+esc(meta.join(" · "))+'</div>':'')+
         '</div>';
       }).join("");
     }catch(err){

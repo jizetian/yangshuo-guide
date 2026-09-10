@@ -23,26 +23,91 @@ const COMMIT_PREFIX = "[agent]";
 
 const MAX_INSTRUCTION = 500;
 const MAX_EDITS = 8;
+const MAX_READS = 6; // 一次会话最多读几块，防止读满全页
 
-const SYSTEM_PROMPT = `你在维护一个阳朔两日游攻略的单页 HTML。用户会用一句话告诉你要改什么，你用 edit_page 工具改。
+/**
+ * 把整页切成命名片段。改动通常只碰一两块，
+ * 让模型按需取，比每次发 22K token 的整页省一个数量级。
+ */
+function splitParts(html) {
+  const parts = [];
+  const add = (name, text, desc) => {
+    if (text && text.length) parts.push({ name, text, desc });
+  };
+
+  const styleM = html.match(/<style>[\s\S]*?<\/style>/);
+  add("css", styleM ? styleM[0] : "", "全部样式");
+
+  const headM = html.match(/<header>[\s\S]*?<\/nav>/);
+  add("header", headM ? headM[0] : "", "标题栏和导航");
+
+  // 正文各 section
+  const secRe = /<section id="([^"]+)"[\s\S]*?(?=\n<section id=|\n<footer|<!-- ═)/g;
+  let m;
+  while ((m = secRe.exec(html)) !== null) {
+    add("body:" + m[1], m[0], "正文 · " + m[1]);
+  }
+
+  const footM = html.match(/<footer>[\s\S]*?<\/footer>/);
+  add("footer", footM ? footM[0] : "", "页脚数据来源说明");
+
+  // JS 按 /* ══ 名称 ══ */ 注释分块
+  const js = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((x) => x[1]).join("\n");
+  const marks = [...js.matchAll(/\/\* ═+ (.+?) ═+ \*\//g)];
+  marks.forEach((mk, i) => {
+    const start = mk.index;
+    const end = i + 1 < marks.length ? marks[i + 1].index : js.length;
+    add("js:" + mk[1].trim(), js.slice(start, end), "脚本 · " + mk[1].trim());
+  });
+
+  return parts;
+}
+
+function outlineOf(parts) {
+  return parts
+    .map((p) => `- ${p.name}  (${(p.text.length / 1024).toFixed(1)}KB) ${p.desc}`)
+    .join("\n");
+}
+
+const SYSTEM_PROMPT = `你在维护一个阳朔两日游攻略的单页 HTML。用户会用一句话告诉你要改什么。
+
+页面很大（约 2 万 token），所以不会整页发给你。先用 read_part 取你需要的那几块，看清楚了再用 edit_page 改。
 
 关于这个页面你需要知道的：
 - 纯静态单文件，内联 CSS 和 JS，没有构建步骤
 - 行程时刻不是写死的：D1 用 data-t（相对到站分钟数，或 SUNSET±N 锚定日落），D2 用 data-t2（ABS-HH:MM 绝对时刻，或 LASTCALL/PICKUP/ARRIVE/DEPART 由返程车次倒推）。改时间优先改这些属性，别改显示出来的时刻文本——那是 JS 算出来的
+- 有些内容在 JS 数据里而不在 HTML 里：打包清单是 js:数据 里的 PACK 数组，地图点位是同一块的 PTS 数组
 - 配色是纸质感（--paper/--ink/--jade/--river/--clay），不要引入渐变或大量 emoji
 - 文案风格：具体、有出处、不说正确的废话。价格要有来源
 
-规矩：
-1. old_string 必须和文件里的内容逐字一致（含缩进），且在全文唯一
-2. 一次改动尽量少，别顺手重排无关的东西
-3. 用户要求含糊时按最合理的理解改，在 reason 里说明你怎么理解的
-4. 如果要求会破坏页面（比如删掉返程警戒线的计算逻辑），不要改，直接说明原因
-5. 改完用中文简短说清改了什么`;
+工作方式：
+1. 先判断要改的东西在哪一块，read_part 取来看。**一次把需要的块全部取完**（同一轮里并列多个 read_part 调用），不要一块一块来回问——每多一轮都要等很久
+2. 拿到内容后，**在同一轮里把所有 edit_page 一次性发出来**，别一处一处改
+3. old_string 必须和文件里的内容逐字一致（含缩进），且在全文唯一——没读过的地方不要凭猜写 old_string
+4. 一次改动尽量少，别顺手重排无关的东西
+5. 用户要求含糊时按最合理的理解改，在 reason 里说明你怎么理解的
+6. 如果要求会破坏页面（比如删掉返程警戒线的计算逻辑），不要改，直接说明原因
+7. 发出 edit_page 的同一条消息里就用中文说清你改了什么，别留到下一轮——改完就结束，不要再问「还需要什么吗」`;
+
+const READ_TOOL = {
+  name: "read_part",
+  description:
+    "读取页面的某一块内容。先读再改，不要凭猜写 old_string。可以一次调用多个。",
+  strict: true,
+  input_schema: {
+    type: "object",
+    properties: {
+      name: { type: "string", description: "块名，从大纲里选，例如 body:d2 或 js:数据" },
+    },
+    required: ["name"],
+    additionalProperties: false,
+  },
+};
 
 const EDIT_TOOL = {
   name: "edit_page",
   description:
-    "对 index.html 做一次精确替换。old_string 必须在文件中唯一且逐字匹配。",
+    "对 index.html 做一次精确替换。old_string 必须在全文唯一且逐字匹配（含缩进）。",
   strict: true,
   input_schema: {
     type: "object",
@@ -154,7 +219,227 @@ async function commitFiles(env, files, message) {
 
 /* ────────── 主流程 ────────── */
 
-async function handleEdit(request, env, origin) {
+const JOB_TTL = 3600; // 任务状态留 1 小时
+
+async function setJob(env, id, patch) {
+  const prev = JSON.parse((await env.JOBS.get(id)) || "{}");
+  const next = { ...prev, ...patch, at: new Date().toISOString() };
+  await env.JOBS.put(id, JSON.stringify(next), { expirationTtl: JOB_TTL });
+  return next;
+}
+
+/**
+ * 真正干活的部分。中转服务慢的时候一次要一两分钟，
+ * 所以放在 ctx.waitUntil 里跑，进度写 KV，前端轮询。
+ */
+async function runEdit(env, jobId, instr) {
+  const step = (s) => setJob(env, jobId, { step: s });
+  try {
+    await step("读取当前页面");
+    const pageMeta = await ghJson(env, `/contents/${PAGE_FILE}?ref=${BRANCH}`);
+    let html = b64decode(pageMeta.content);
+    const originalHtml = html;
+
+    const client = new Anthropic({
+      apiKey: env.ANTHROPIC_API_KEY,
+      ...(env.ANTHROPIC_BASE_URL ? { baseURL: env.ANTHROPIC_BASE_URL } : {}),
+    });
+
+    const parts = splitParts(html);
+    const outline = outlineOf(parts);
+    const applied = [];
+    const readNames = [];
+    const usage = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
+
+    let messages = [
+      {
+        role: "user",
+        content: `页面分成这些块（改动通常只碰一两块）：\n\n${outline}\n\n用户要求：${instr}`,
+      },
+    ];
+
+    let summary = "";
+    let editSummary = "";
+    for (let turn = 0; turn < 8; turn++) {
+      await step(turn === 0 ? "助手在想改哪里" : `第 ${turn + 1} 轮`);
+      const resp = await client.messages.create({
+        model: "claude-opus-5",
+        max_tokens: 8000,
+        thinking: { type: "adaptive" },
+        // 改文案不需要 high；中转服务延迟随请求增大而暴涨，省一轮就是省几十秒
+        output_config: { effort: "medium" },
+        // 系统提示是稳定前缀，缓存它；页面内容按需通过工具进来，不进前缀
+        system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
+        tools: [READ_TOOL, EDIT_TOOL],
+        messages,
+      });
+
+      const u = resp.usage || {};
+      usage.input += u.input_tokens || 0;
+      usage.output += u.output_tokens || 0;
+      usage.cacheRead += u.cache_read_input_tokens || 0;
+      usage.cacheWrite += u.cache_creation_input_tokens || 0;
+
+      if (resp.stop_reason === "refusal") {
+        return setJob(env, jobId, { status: "error", error: "这个要求我不能改" });
+      }
+
+      const toolUses = resp.content.filter((b) => b.type === "tool_use");
+      const text = resp.content
+        .filter((b) => b.type === "text")
+        .map((b) => b.text)
+        .join("\n")
+        .trim();
+      if (text && text.length > 8) summary = text;
+      // 跟 edit_page 同一轮说出来的话才是改动说明；
+      // 收尾轮往往只是「改好了，还有别的吗」，不该覆盖它
+      if (text && toolUses.some((t) => t.name === "edit_page")) editSummary = text;
+
+      if (resp.stop_reason === "end_turn" || toolUses.length === 0) break;
+
+      messages.push({ role: "assistant", content: resp.content });
+
+      const results = [];
+      for (const tu of toolUses) {
+        if (tu.name === "read_part") {
+          const want = String(tu.input.name || "").trim();
+          const hit = parts.find((p) => p.name === want);
+          if (!hit) {
+            results.push({
+              type: "tool_result",
+              tool_use_id: tu.id,
+              content: `没有这一块。可选：\n${parts.map((p) => p.name).join("\n")}`,
+              is_error: true,
+            });
+          } else if (readNames.length >= MAX_READS) {
+            results.push({
+              type: "tool_result",
+              tool_use_id: tu.id,
+              content: `已达读取上限（${MAX_READS} 块）。用已经读到的内容来改。`,
+              is_error: true,
+            });
+          } else {
+            readNames.push(hit.name);
+            await step(`读了 ${readNames.join("、")}`);
+            results.push({ type: "tool_result", tool_use_id: tu.id, content: hit.text });
+          }
+          continue;
+        }
+
+        if (applied.length >= MAX_EDITS) {
+          results.push({
+            type: "tool_result",
+            tool_use_id: tu.id,
+            content: `已达单次改动上限（${MAX_EDITS} 处），请分次来。`,
+            is_error: true,
+          });
+          continue;
+        }
+        const { old_string, new_string, reason } = tu.input;
+        const hits = html.split(old_string).length - 1;
+        if (hits === 0) {
+          results.push({
+            type: "tool_result",
+            tool_use_id: tu.id,
+            content:
+              "old_string 在文件里找不到。注意空格和缩进必须逐字一致；" +
+              "如果这块还没读过，先 read_part 取来看。",
+            is_error: true,
+          });
+        } else if (hits > 1) {
+          results.push({
+            type: "tool_result",
+            tool_use_id: tu.id,
+            content: `old_string 匹配到 ${hits} 处，不唯一。往前后多带几行让它唯一。`,
+            is_error: true,
+          });
+        } else {
+          html = html.replace(old_string, new_string);
+          applied.push({ reason, chars: new_string.length - old_string.length });
+          await step(`已改 ${applied.length} 处`);
+          results.push({ type: "tool_result", tool_use_id: tu.id, content: "改好了" });
+        }
+      }
+      messages.push({ role: "user", content: results });
+
+      // 这一轮已经改成了，且没有失败的 edit 需要重试 —— 直接收工。
+      // 再跑一轮只为让模型说句「还有别的吗」，而中转服务每轮要几十秒。
+      const editedThisTurn = toolUses.some((t) => t.name === "edit_page");
+      const anyEditFailed = results.some((r) => r.is_error);
+      if (editedThisTurn && !anyEditFailed && applied.length) break;
+    }
+
+    if (!applied.length) {
+      return setJob(env, jobId, {
+        status: "nochange",
+        error: summary || "没有做任何改动",
+        usage,
+        read: readNames,
+      });
+    }
+    if (html === originalHtml) {
+      return setJob(env, jobId, { status: "nochange", error: "改完内容没变化", usage });
+    }
+
+    // 改动说明：优先用改动那一轮说的话，否则退回逐条 reason
+    const finalSummary = editSummary || summary || applied.map((a) => a.reason).join("；");
+
+    await step("写入修改历史");
+    let history = { version: 1, entries: [] };
+    try {
+      const hMeta = await ghJson(env, `/contents/${HISTORY_FILE}?ref=${BRANCH}`);
+      history = JSON.parse(b64decode(hMeta.content));
+    } catch {
+      /* 首次运行还没有这个文件 */
+    }
+    if (!Array.isArray(history.entries)) history.entries = [];
+
+    history.entries.unshift({
+      at: new Date().toISOString(),
+      instruction: instr,
+      summary: finalSummary,
+      edits: applied.map((a) => a.reason),
+      read: readNames,
+      usage,
+      bytes: html.length - originalHtml.length,
+    });
+    history.entries = history.entries.slice(0, 100);
+
+    await step("提交到 GitHub");
+    const title = instr.replace(/\s+/g, " ").slice(0, 50);
+    const sha = await commitFiles(
+      env,
+      [
+        { path: PAGE_FILE, content: html },
+        { path: HISTORY_FILE, content: JSON.stringify(history, null, 2) + "\n" },
+      ],
+      `${COMMIT_PREFIX} ${title}\n\n` +
+        (finalSummary ? `${finalSummary}\n\n` : "") +
+        `改动 ${applied.length} 处：\n` +
+        applied.map((a) => `- ${a.reason}`).join("\n") +
+        (readNames.length ? `\n\n读取：${readNames.join(", ")}` : "") +
+        `\n\n由行程助手自动提交。`
+    );
+
+    return setJob(env, jobId, {
+      status: "done",
+      summary: finalSummary,
+      edits: applied.map((a) => a.reason),
+      commit: sha.slice(0, 7),
+      read: readNames,
+      usage,
+      step: "完成",
+    });
+  } catch (err) {
+    return setJob(env, jobId, {
+      status: "error",
+      error: String(err && err.message ? err.message : err).slice(0, 400),
+    });
+  }
+}
+
+/** 只做校验和建任务，立刻返回 —— 不让调用方举着连接干等 */
+async function handleEdit(request, env, ctx, origin) {
   let body;
   try {
     body = await request.json();
@@ -173,160 +458,15 @@ async function handleEdit(request, env, origin) {
     return json({ ok: false, error: `太长了，${MAX_INSTRUCTION} 字以内` }, 400, origin);
   }
 
-  // 1. 取当前页面
-  const pageMeta = await ghJson(env, `/contents/${PAGE_FILE}?ref=${BRANCH}`);
-  let html = b64decode(pageMeta.content);
-  const originalHtml = html;
+  const jobId = crypto.randomUUID().slice(0, 8);
+  await setJob(env, jobId, { status: "running", step: "排队中", instruction: instr });
+  ctx.waitUntil(runEdit(env, jobId, instr));
 
-  // 2. 让 Claude 提出改动
-  // ANTHROPIC_BASE_URL 可选：走中转服务时设置，留空则直连官方
-  const client = new Anthropic({
-    apiKey: env.ANTHROPIC_API_KEY,
-    ...(env.ANTHROPIC_BASE_URL ? { baseURL: env.ANTHROPIC_BASE_URL } : {}),
-  });
-  const applied = [];
-  let messages = [
-    {
-      role: "user",
-      content: [
-        {
-          type: "text",
-          text: `这是 index.html 的当前内容：\n\n<page>\n${html}\n</page>`,
-          cache_control: { type: "ephemeral" },
-        },
-        { type: "text", text: `用户要求：${instr}` },
-      ],
-    },
-  ];
-
-  let summary = "";
-  for (let turn = 0; turn < 6; turn++) {
-    const resp = await client.messages.create({
-      model: "claude-opus-5",
-      max_tokens: 16000,
-      thinking: { type: "adaptive" },
-      system: SYSTEM_PROMPT,
-      tools: [EDIT_TOOL],
-      messages,
-    });
-
-    if (resp.stop_reason === "refusal") {
-      return json({ ok: false, error: "这个要求我不能改" }, 400, origin);
-    }
-
-    const toolUses = resp.content.filter((b) => b.type === "tool_use");
-    const text = resp.content
-      .filter((b) => b.type === "text")
-      .map((b) => b.text)
-      .join("\n")
-      .trim();
-    if (text) summary = text;
-
-    if (resp.stop_reason === "end_turn" || toolUses.length === 0) break;
-
-    messages.push({ role: "assistant", content: resp.content });
-
-    const results = [];
-    for (const tu of toolUses) {
-      if (applied.length >= MAX_EDITS) {
-        results.push({
-          type: "tool_result",
-          tool_use_id: tu.id,
-          content: `已达单次改动上限（${MAX_EDITS} 处），请分次来。`,
-          is_error: true,
-        });
-        continue;
-      }
-      const { old_string, new_string, reason } = tu.input;
-      const hits = html.split(old_string).length - 1;
-      if (hits === 0) {
-        results.push({
-          type: "tool_result",
-          tool_use_id: tu.id,
-          content: "old_string 在文件里找不到。注意空格和缩进必须逐字一致。",
-          is_error: true,
-        });
-      } else if (hits > 1) {
-        results.push({
-          type: "tool_result",
-          tool_use_id: tu.id,
-          content: `old_string 匹配到 ${hits} 处，不唯一。往前后多带几行让它唯一。`,
-          is_error: true,
-        });
-      } else {
-        html = html.replace(old_string, new_string);
-        applied.push({ reason, chars: new_string.length - old_string.length });
-        results.push({ type: "tool_result", tool_use_id: tu.id, content: "改好了" });
-      }
-    }
-    messages.push({ role: "user", content: results });
-  }
-
-  if (!applied.length) {
-    return json(
-      { ok: false, error: summary || "没有做任何改动", noChange: true },
-      200,
-      origin
-    );
-  }
-  if (html === originalHtml) {
-    return json({ ok: false, error: "改完内容没变化" }, 200, origin);
-  }
-
-  // 3. 写修改历史
-  let history = { version: 1, entries: [] };
-  let historySha = null;
-  try {
-    const hMeta = await ghJson(env, `/contents/${HISTORY_FILE}?ref=${BRANCH}`);
-    history = JSON.parse(b64decode(hMeta.content));
-    historySha = hMeta.sha;
-  } catch {
-    /* 首次运行还没有这个文件 */
-  }
-  if (!Array.isArray(history.entries)) history.entries = [];
-
-  const entry = {
-    at: new Date().toISOString(),
-    instruction: instr,
-    summary: summary || "（无说明）",
-    edits: applied.map((a) => a.reason),
-    bytes: html.length - originalHtml.length,
-  };
-  history.entries.unshift(entry);
-  history.entries = history.entries.slice(0, 100);
-
-  // 4. 一次提交推上去，带标记
-  //    标题用用户原话（短且稳定），summary 可能很长且带换行，放正文
-  const title = instr.replace(/\s+/g, " ").slice(0, 50);
-  const sha = await commitFiles(
-    env,
-    [
-      { path: PAGE_FILE, content: html },
-      { path: HISTORY_FILE, content: JSON.stringify(history, null, 2) + "\n" },
-    ],
-    `${COMMIT_PREFIX} ${title}\n\n` +
-      (summary ? `${summary}\n\n` : "") +
-      `改动 ${applied.length} 处：\n` +
-      applied.map((a) => `- ${a.reason}`).join("\n") +
-      `\n\n由行程助手自动提交。`
-  );
-
-  entry.commit = sha.slice(0, 7);
-  return json(
-    {
-      ok: true,
-      summary: summary || "改好了",
-      edits: applied.map((a) => a.reason),
-      commit: sha.slice(0, 7),
-      note: "GitHub Pages 构建约 1 分钟，之后强刷页面就能看到。",
-    },
-    200,
-    origin
-  );
+  return json({ ok: true, jobId, status: "running" }, 202, origin);
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const reqOrigin = request.headers.get("origin") || "";
     const allow = (env.ALLOWED_ORIGIN || "").split(",").map((s) => s.trim()).filter(Boolean);
@@ -357,9 +497,16 @@ export default {
       );
     }
 
+    if (url.pathname === "/job" && request.method === "GET") {
+      const id = url.searchParams.get("id") || "";
+      const raw = await env.JOBS.get(id);
+      if (!raw) return json({ ok: false, error: "任务不存在或已过期" }, 404, origin);
+      return json({ ok: true, job: JSON.parse(raw) }, 200, origin);
+    }
+
     if (url.pathname === "/edit" && request.method === "POST") {
       try {
-        return await handleEdit(request, env, origin);
+        return await handleEdit(request, env, ctx, origin);
       } catch (err) {
         return json({ ok: false, error: String(err.message || err).slice(0, 400) }, 500, origin);
       }
